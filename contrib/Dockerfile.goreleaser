@@ -1,0 +1,15 @@
+FROM docker.io/library/alpine:latest
+
+RUN apk add --no-cache tzdata
+
+LABEL org.opencontainers.image.licenses=BSD-3-Clause
+LABEL org.opencontainers.image.description="Prometheus metrics for Paperless-ngx"
+
+WORKDIR /
+
+COPY LICENSE README.md /
+COPY prometheus-paperless-exporter /
+
+ENTRYPOINT ["/prometheus-paperless-exporter"]
+
+# vim: set ft=dockerfile :

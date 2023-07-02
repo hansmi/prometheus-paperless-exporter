@@ -1,0 +1,73 @@
+# Configuration for GoReleaser
+# https://goreleaser.com/
+#
+# Local test: contrib/build-all
+#
+
+project_name: prometheus-paperless-exporter
+
+builds:
+  - main: .
+    binary: prometheus-paperless-exporter
+    env:
+      - CGO_ENABLED=0
+    targets:
+      - go_first_class
+    flags:
+      - -trimpath
+    ldflags: |
+      -s -w
+      -X github.com/prometheus/common/version.Version={{.Version}}
+      -X github.com/prometheus/common/version.Revision={{.FullCommit}}
+      -X github.com/prometheus/common/version.Branch={{.Branch}}
+      -X github.com/prometheus/common/version.BuildDate={{.Date}}
+
+nfpms:
+  - description: Prometheus metrics for Paperless-ngx
+    maintainer: M. Hanselmann
+    bindir: /usr/bin
+    license: BSD-3-Clause
+    formats:
+      - deb
+      - rpm
+    contents:
+      - src: ./README.md
+        dst: /usr/share/doc/prometheus-paperless-exporter/README.md
+      - src: ./LICENSE
+        dst: /usr/share/doc/prometheus-paperless-exporter/LICENSE
+
+archives:
+  - format: tar.gz
+    wrap_in_directory: true
+    files:
+      - LICENSE
+      - README.md
+
+dockers:
+  - ids:
+      - prometheus-paperless-exporter
+    use: buildx
+    dockerfile: contrib/Dockerfile.goreleaser
+    extra_files:
+      - LICENSE
+      - README.md
+    image_templates:
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}
+      - ghcr.io/hansmi/prometheus-paperless-exporter:v{{.Major}}
+      - ghcr.io/hansmi/prometheus-paperless-exporter:latest
+    build_flag_templates:
+      - --pull
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+
+release:
+  draft: true
+  prerelease: auto
+
+snapshot:
+  name_template: '{{ incpatch .Version }}-snapshot{{ replace (replace .Date ":" "") "-" "" }}+g{{ .ShortCommit }}'
+
+# vim: set sw=2 sts=2 et :

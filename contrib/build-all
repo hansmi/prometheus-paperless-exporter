@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e -u -o pipefail
+
+package=github.com/hansmi/prometheus-paperless-exporter
+docker_gid=$(getent group docker | cut -d: -f3)
+
+docker run --rm \
+  --user "$(id -u):$(id -g)" --group-add="$docker_gid" \
+  --env HOME=/tmp \
+  -v "${PWD}:/go/src/${package}" \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -w "/go/src/${package}" \
+  goreleaser/goreleaser:latest release --snapshot --clean --skip-publish
+
+# vim: set sw=2 sts=2 et :
