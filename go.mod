@@ -6,7 +6,7 @@ require (
 	github.com/alecthomas/kingpin/v2 v2.3.2
 	github.com/go-kit/log v0.2.1
 	github.com/google/go-cmp v0.5.9
-	github.com/hansmi/paperhooks v0.0.3
+	github.com/hansmi/paperhooks v0.0.4
 	github.com/prometheus/client_golang v1.16.0
 	github.com/prometheus/common v0.44.0
 	github.com/prometheus/exporter-toolkit v0.10.0
