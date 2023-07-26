@@ -9,7 +9,7 @@ import (
 )
 
 type documentTypeClient interface {
-	ListAllDocumentTypes(context.Context, *client.ListDocumentTypesOptions, func(context.Context, client.DocumentType) error) error
+	ListAllDocumentTypes(context.Context, client.ListDocumentTypesOptions, func(context.Context, client.DocumentType) error) error
 }
 
 type documentTypeCollector struct {
@@ -38,7 +38,8 @@ func (c *documentTypeCollector) describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c *documentTypeCollector) collect(ctx context.Context, ch chan<- prometheus.Metric) error {
-	opts := &client.ListDocumentTypesOptions{}
+	var opts client.ListDocumentTypesOptions
+
 	opts.Ordering.Field = "name"
 
 	return c.cl.ListAllDocumentTypes(ctx, opts, func(_ context.Context, doctype client.DocumentType) error {

@@ -16,7 +16,7 @@ type fakeTagClient struct {
 	err   error
 }
 
-func (c *fakeTagClient) ListAllTags(ctx context.Context, opts *client.ListTagsOptions, handler func(context.Context, client.Tag) error) error {
+func (c *fakeTagClient) ListAllTags(ctx context.Context, opts client.ListTagsOptions, handler func(context.Context, client.Tag) error) error {
 	for _, i := range c.items {
 		if err := handler(ctx, i); err != nil {
 			return err

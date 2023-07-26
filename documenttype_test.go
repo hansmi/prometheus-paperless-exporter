@@ -16,7 +16,7 @@ type fakeDocumentTypeClient struct {
 	err   error
 }
 
-func (c *fakeDocumentTypeClient) ListAllDocumentTypes(ctx context.Context, opts *client.ListDocumentTypesOptions, handler func(context.Context, client.DocumentType) error) error {
+func (c *fakeDocumentTypeClient) ListAllDocumentTypes(ctx context.Context, opts client.ListDocumentTypesOptions, handler func(context.Context, client.DocumentType) error) error {
 	for _, i := range c.items {
 		if err := handler(ctx, i); err != nil {
 			return err

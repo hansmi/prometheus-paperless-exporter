@@ -9,7 +9,7 @@ import (
 )
 
 type tagClient interface {
-	ListAllTags(context.Context, *client.ListTagsOptions, func(context.Context, client.Tag) error) error
+	ListAllTags(context.Context, client.ListTagsOptions, func(context.Context, client.Tag) error) error
 }
 
 type tagCollector struct {
@@ -38,7 +38,8 @@ func (c *tagCollector) describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c *tagCollector) collect(ctx context.Context, ch chan<- prometheus.Metric) error {
-	opts := &client.ListTagsOptions{}
+	var opts client.ListTagsOptions
+
 	opts.Ordering.Field = "name"
 
 	return c.cl.ListAllTags(ctx, opts, func(_ context.Context, tag client.Tag) error {

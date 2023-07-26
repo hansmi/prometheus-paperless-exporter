@@ -9,7 +9,7 @@ import (
 )
 
 type correspondentClient interface {
-	ListAllCorrespondents(context.Context, *client.ListCorrespondentsOptions, func(context.Context, client.Correspondent) error) error
+	ListAllCorrespondents(context.Context, client.ListCorrespondentsOptions, func(context.Context, client.Correspondent) error) error
 }
 
 type correspondentCollector struct {
@@ -43,7 +43,8 @@ func (c *correspondentCollector) describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c *correspondentCollector) collect(ctx context.Context, ch chan<- prometheus.Metric) error {
-	opts := &client.ListCorrespondentsOptions{}
+	var opts client.ListCorrespondentsOptions
+
 	opts.Ordering.Field = "name"
 
 	return c.cl.ListAllCorrespondents(ctx, opts, func(_ context.Context, correspondent client.Correspondent) error {

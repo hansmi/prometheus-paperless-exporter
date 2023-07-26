@@ -9,7 +9,7 @@ import (
 )
 
 type storagePathClient interface {
-	ListAllStoragePaths(context.Context, *client.ListStoragePathsOptions, func(context.Context, client.StoragePath) error) error
+	ListAllStoragePaths(context.Context, client.ListStoragePathsOptions, func(context.Context, client.StoragePath) error) error
 }
 
 type storagePathCollector struct {
@@ -38,7 +38,8 @@ func (c *storagePathCollector) describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c *storagePathCollector) collect(ctx context.Context, ch chan<- prometheus.Metric) error {
-	opts := &client.ListStoragePathsOptions{}
+	var opts client.ListStoragePathsOptions
+
 	opts.Ordering.Field = "name"
 
 	return c.cl.ListAllStoragePaths(ctx, opts, func(_ context.Context, sp client.StoragePath) error {

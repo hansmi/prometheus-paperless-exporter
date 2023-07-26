@@ -18,7 +18,7 @@ type fakeCorrespondentClient struct {
 	err   error
 }
 
-func (c *fakeCorrespondentClient) ListAllCorrespondents(ctx context.Context, opts *client.ListCorrespondentsOptions, handler func(context.Context, client.Correspondent) error) error {
+func (c *fakeCorrespondentClient) ListAllCorrespondents(ctx context.Context, opts client.ListCorrespondentsOptions, handler func(context.Context, client.Correspondent) error) error {
 	for _, i := range c.items {
 		if err := handler(ctx, i); err != nil {
 			return err

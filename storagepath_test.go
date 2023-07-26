@@ -16,7 +16,7 @@ type fakeStoragePathClient struct {
 	err   error
 }
 
-func (c *fakeStoragePathClient) ListAllStoragePaths(ctx context.Context, opts *client.ListStoragePathsOptions, handler func(context.Context, client.StoragePath) error) error {
+func (c *fakeStoragePathClient) ListAllStoragePaths(ctx context.Context, opts client.ListStoragePathsOptions, handler func(context.Context, client.StoragePath) error) error {
 	for _, i := range c.items {
 		if err := handler(ctx, i); err != nil {
 			return err
