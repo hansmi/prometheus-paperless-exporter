@@ -61,6 +61,17 @@ With the source being available it's also possible to produce custom builds
 directly using [Go][golang] or [GoReleaser][goreleaser].
 
 
+### Docker Compose
+
+An example configuration for [Docker Compose][dockercompose] is available in
+`contrib/docker-compose`:
+
+```shell
+env --chdir contrib/docker-compose docker-compose up
+```
+
+
+[dockercompose]: https://docs.docker.com/compose/
 [golang]: https://golang.org/
 [goreleaser]: https://goreleaser.com/
 [paperless-api]: https://docs.paperless-ngx.com/api/

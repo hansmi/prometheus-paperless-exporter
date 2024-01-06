@@ -1,0 +1,14 @@
+---
+version: "3.7"
+services:
+  exporter:
+    image: ghcr.io/hansmi/prometheus-paperless-exporter:latest
+    restart: on-failure
+    init: true
+    ports:
+      - 127.0.0.1:8081:8081
+    env_file: exporter.env
+    volumes:
+      - ./config/:/etc/exporter:ro
+
+# vim: set sw=2 sts=2 et :
