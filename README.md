@@ -27,6 +27,21 @@ toolkit][toolkit]. A configuration file can be passed to the `-web.config` flag
 See the `--help` output for more flags.
 
 
+## Permissions
+
+Since late 2023 Paperless-ngx [supports object
+permissions][paperless-permissions]. The metrics user requires _view_
+permissions on the following types:
+
+* Admin (for logs)
+* Correspondent
+* Document
+* DocumentType
+* PaperlessTask
+* StoragePath
+* Tag
+
+
 ## Installation
 
 Pre-built binaries are provided for [all releases][releases]:
@@ -50,6 +65,7 @@ directly using [Go][golang] or [GoReleaser][goreleaser].
 [goreleaser]: https://goreleaser.com/
 [paperless-api]: https://docs.paperless-ngx.com/api/
 [paperless]: https://docs.paperless-ngx.com/
+[paperless-permissions]: https://docs.paperless-ngx.com/usage/#permissions
 [releases]: https://github.com/hansmi/prometheus-paperless-exporter/releases/latest
 [toolkit]: https://github.com/prometheus/exporter-toolkit
 [toolkitconfig]: https://github.com/prometheus/exporter-toolkit/blob/master/docs/web-configuration.md
