@@ -11,6 +11,6 @@ docker run --rm \
   -v "${PWD}:/go/src/${package}" \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -w "/go/src/${package}" \
-  goreleaser/goreleaser:latest release --snapshot --clean --skip-publish
+  goreleaser/goreleaser:latest release --snapshot --clean --skip=publish
 
 # vim: set sw=2 sts=2 et :
