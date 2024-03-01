@@ -1,6 +1,8 @@
 module github.com/hansmi/prometheus-paperless-exporter
 
-go 1.19
+go 1.21
+
+toolchain go1.21.5
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
@@ -8,7 +10,7 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/hansmi/paperhooks v0.0.10
 	github.com/prometheus/client_golang v1.19.0
-	github.com/prometheus/common v0.48.0
+	github.com/prometheus/common v0.49.0
 	github.com/prometheus/exporter-toolkit v0.11.0
 	golang.org/x/sync v0.6.0
 )
@@ -28,7 +30,7 @@ require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
-	github.com/prometheus/client_model v0.5.0 // indirect
+	github.com/prometheus/client_model v0.6.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
