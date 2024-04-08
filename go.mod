@@ -11,7 +11,7 @@ require (
 	github.com/hansmi/paperhooks v0.0.10
 	github.com/prometheus/client_golang v1.19.0
 	github.com/prometheus/exporter-toolkit v0.11.0
-	golang.org/x/sync v0.6.0
+	golang.org/x/sync v0.7.0
 )
 
 require (
