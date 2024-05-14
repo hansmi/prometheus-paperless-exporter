@@ -33,7 +33,10 @@ Since late 2023 Paperless-ngx [supports object
 permissions][paperless-permissions]. The metrics user requires _view_
 permissions on the following types:
 
-* Admin (for logs)
+* Admin
+  * Required for log analysis.
+  * Starting with version 2.8 there is no distinction between different access
+    modes ([paperless-ngx#6380](https://github.com/paperless-ngx/paperless-ngx/pull/6380)).
 * Correspondent
 * Document
 * DocumentType
