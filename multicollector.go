@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"runtime"
 	"time"
 
@@ -53,6 +54,7 @@ func (c *multiCollector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	if err := g.Wait(); err != nil {
+		log.Printf("Metrics collection failed: %v", err.Error())
 		ch <- prometheus.NewInvalidMetric(
 			prometheus.NewDesc("paperless_error", "Metrics collection failed", nil, nil),
 			err)
