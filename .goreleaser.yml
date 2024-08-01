@@ -4,6 +4,8 @@
 # Local test: contrib/build-all
 #
 
+version: 2
+
 project_name: prometheus-paperless-exporter
 
 builds:
