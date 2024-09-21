@@ -15,6 +15,11 @@ builds:
       - CGO_ENABLED=0
     targets:
       - go_first_class
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
     flags:
       - -trimpath
     ldflags: |
@@ -46,24 +51,56 @@ archives:
       - README.md
 
 dockers:
-  - ids:
-      - prometheus-paperless-exporter
-    use: buildx
+  - use: buildx
+    goos: linux
+    goarch: amd64
     dockerfile: contrib/Dockerfile.goreleaser
+    image_templates:
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-amd64
+      - ghcr.io/hansmi/prometheus-paperless-exporter:v{{.Major}}-amd64
     extra_files:
       - LICENSE
       - README.md
-    image_templates:
-      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}
-      - ghcr.io/hansmi/prometheus-paperless-exporter:v{{.Major}}
-      - ghcr.io/hansmi/prometheus-paperless-exporter:latest
     build_flag_templates:
+      - --platform=linux/amd64
       - --pull
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+  - use: buildx
+    goos: linux
+    goarch: arm64
+    dockerfile: contrib/Dockerfile.goreleaser
+    image_templates:
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-arm64
+      - ghcr.io/hansmi/prometheus-paperless-exporter:v{{.Major}}-arm64
+    extra_files:
+      - LICENSE
+      - README.md
+    build_flag_templates:
+      - --platform=linux/arm64
+      - --pull
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+
+docker_manifests:
+  - name_template: ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}
+    image_templates:
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-amd64
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-arm64
+  - name_template: ghcr.io/hansmi/prometheus-paperless-exporter:v{{.Major}}
+    image_templates:
+      - ghcr.io/hansmi/prometheus-paperless-exporter:v{{.Major}}-amd64
+      - ghcr.io/hansmi/prometheus-paperless-exporter:v{{.Major}}-arm64
+  - name_template: ghcr.io/hansmi/prometheus-paperless-exporter:latest
+    image_templates:
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-amd64
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-arm64
 
 release:
   draft: true
