@@ -9,7 +9,7 @@ require (
 	github.com/go-kit/log v0.2.1
 	github.com/google/go-cmp v0.6.0
 	github.com/hansmi/paperhooks v0.0.11
-	github.com/prometheus/client_golang v1.20.2
+	github.com/prometheus/client_golang v1.20.4
 	github.com/prometheus/exporter-toolkit v0.11.0
 	golang.org/x/sync v0.8.0
 )
