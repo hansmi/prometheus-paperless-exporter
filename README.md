@@ -54,14 +54,15 @@ Pre-built binaries are provided for [all releases][releases]:
 * RHEL/Fedora (`.rpm`)
 * Microsoft Windows (`.zip`)
 
-Docker images via GitHub's container registry:
+Docker images via GitHub's container registry. The image supports Linux/AMD64
+and Linux/ARM64.
 
 ```shell
 docker pull ghcr.io/hansmi/prometheus-paperless-exporter
 ```
 
-With the source being available it's also possible to produce custom builds
-directly using [Go][golang] or [GoReleaser][goreleaser].
+It's also possible to produce custom builds directly using [Go][golang] or
+[GoReleaser][goreleaser].
 
 
 ### Docker Compose

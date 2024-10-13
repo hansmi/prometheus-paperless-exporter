@@ -46,24 +46,48 @@ archives:
       - README.md
 
 dockers:
-  - ids:
-      - prometheus-paperless-exporter
-    use: buildx
+  - use: buildx
+    goos: linux
+    goarch: amd64
     dockerfile: contrib/Dockerfile.goreleaser
-    extra_files:
+    extra_files: &docker_extra_files
       - LICENSE
       - README.md
     image_templates:
-      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}
-      - ghcr.io/hansmi/prometheus-paperless-exporter:v{{.Major}}
-      - ghcr.io/hansmi/prometheus-paperless-exporter:latest
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-amd64
     build_flag_templates:
       - --pull
+      - --platform=linux/amd64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+  - use: buildx
+    goos: linux
+    goarch: arm64
+    dockerfile: contrib/Dockerfile.goreleaser
+    extra_files: *docker_extra_files
+    image_templates:
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-arm64
+    build_flag_templates:
+      - --pull
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+
+docker_manifests:
+  - name_template: ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}
+    image_templates: &docker_manifest_image_templates
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-amd64
+      - ghcr.io/hansmi/prometheus-paperless-exporter:{{.Tag}}-arm64
+  - name_template: ghcr.io/hansmi/prometheus-paperless-exporter:v{{.Major}}
+    image_templates: *docker_manifest_image_templates
+  - name_template: ghcr.io/hansmi/prometheus-paperless-exporter:latest
+    image_templates: *docker_manifest_image_templates
 
 release:
   draft: true
