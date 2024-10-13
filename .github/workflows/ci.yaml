@@ -5,13 +5,14 @@ on:
   pull_request:
   push:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   test:
     uses: hansmi/ghactions-go-test-workflow/.github/workflows/test.yaml@v0.2
     with:
       runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
 # vim: set sw=2 sts=2 et :
