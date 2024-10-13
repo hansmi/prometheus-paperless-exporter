@@ -6,13 +6,14 @@ import (
 	"net/http"
 
 	"github.com/alecthomas/kingpin/v2"
-	kitlog "github.com/go-kit/log"
 	"github.com/hansmi/paperhooks/pkg/client"
 	"github.com/hansmi/paperhooks/pkg/kpflag"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/collectors/version"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/common/promslog"
+	promslogflag "github.com/prometheus/common/promslog/flag"
 	"github.com/prometheus/exporter-toolkit/web"
 	webflag "github.com/prometheus/exporter-toolkit/web/kingpinflag"
 )
@@ -25,8 +26,13 @@ var timeout = kingpin.Flag("scrape-timeout", "Maximum duration for a scrape").De
 func main() {
 	var clientFlags client.Flags
 
+	promslogConfig := &promslog.Config{}
+	promslogflag.AddFlags(kingpin.CommandLine, promslogConfig)
+
 	kpflag.RegisterClient(kingpin.CommandLine, &clientFlags)
 	kingpin.Parse()
+
+	logger := promslog.New(promslogConfig)
 
 	client, err := clientFlags.Build()
 	if err != nil {
@@ -56,7 +62,6 @@ func main() {
 			</html>`)
 	})
 
-	logger := kitlog.NewLogfmtLogger(kitlog.StdlibWriter{})
 	server := &http.Server{}
 
 	if err := web.ListenAndServe(server, webConfig, logger); err != nil {
