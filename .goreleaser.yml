@@ -89,6 +89,13 @@ docker_manifests:
   - name_template: ghcr.io/hansmi/prometheus-paperless-exporter:latest
     image_templates: *docker_manifest_image_templates
 
+changelog:
+  groups:
+    - title: Dependencies
+      regexp: '(?i)^[a-f0-9]{8,64}\s+Bump\s+[-.\w]+/\w.*\sto\s'
+      order: 1
+    - order: 0
+
 release:
   draft: true
   prerelease: auto
