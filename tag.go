@@ -17,6 +17,7 @@ type tagCollector struct {
 
 	infoDesc     *prometheus.Desc
 	docCountDesc *prometheus.Desc
+	inboxDesc    *prometheus.Desc
 }
 
 func newTagCollector(cl tagClient) *tagCollector {
@@ -29,12 +30,16 @@ func newTagCollector(cl tagClient) *tagCollector {
 		docCountDesc: prometheus.NewDesc("paperless_tag_document_count",
 			"Number of documents associated with a tag.",
 			[]string{"id"}, nil),
+		inboxDesc: prometheus.NewDesc("paperless_tag_inbox",
+			"Whether the tag is marked as an inbox tag.",
+			[]string{"id"}, nil),
 	}
 }
 
 func (c *tagCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.infoDesc
 	ch <- c.docCountDesc
+	ch <- c.inboxDesc
 }
 
 func (c *tagCollector) collect(ctx context.Context, ch chan<- prometheus.Metric) error {
@@ -53,6 +58,15 @@ func (c *tagCollector) collect(ctx context.Context, ch chan<- prometheus.Metric)
 
 		ch <- prometheus.MustNewConstMetric(c.docCountDesc, prometheus.GaugeValue,
 			float64(tag.DocumentCount), id)
+
+		isInboxTag := 0
+
+		if tag.IsInboxTag {
+			isInboxTag = 1
+		}
+
+		ch <- prometheus.MustNewConstMetric(c.inboxDesc, prometheus.GaugeValue,
+			float64(isInboxTag), id)
 
 		return nil
 	})

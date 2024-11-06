@@ -80,6 +80,7 @@ func TestTagCollect(t *testing.T) {
 	cl.items = append(cl.items, []client.Tag{
 		{ID: 8463, Name: "aaa", Slug: "aslug"},
 		{ID: 338, Name: "three-three-eight", DocumentCount: 13},
+		{ID: 2930, Name: "mybox", Slug: "mb", IsInboxTag: true},
 		{ID: 26429, Name: "last"},
 	}...)
 
@@ -87,11 +88,19 @@ func TestTagCollect(t *testing.T) {
 # HELP paperless_tag_document_count Number of documents associated with a tag.
 # TYPE paperless_tag_document_count gauge
 paperless_tag_document_count{id="26429"} 0
+paperless_tag_document_count{id="2930"} 0
 paperless_tag_document_count{id="338"} 13
 paperless_tag_document_count{id="8463"} 0
+# HELP paperless_tag_inbox Whether the tag is marked as an inbox tag.
+# TYPE paperless_tag_inbox gauge
+paperless_tag_inbox{id="26429"} 0
+paperless_tag_inbox{id="2930"} 1
+paperless_tag_inbox{id="338"} 0
+paperless_tag_inbox{id="8463"} 0
 # HELP paperless_tag_info Static information about a tag.
 # TYPE paperless_tag_info gauge
 paperless_tag_info{id="26429",name="last",slug=""} 1
+paperless_tag_info{id="2930",name="mybox",slug="mb"} 1
 paperless_tag_info{id="338",name="three-three-eight",slug=""} 1
 paperless_tag_info{id="8463",name="aaa",slug="aslug"} 1
 `)
