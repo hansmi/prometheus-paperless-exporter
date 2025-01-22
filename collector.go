@@ -18,6 +18,7 @@ func newCollector(cl *client.Client, timeout time.Duration) prometheus.Collector
 			newTaskCollector(cl),
 			newLogCollector(cl),
 			newGroupCollector(cl),
+			newUserCollector(cl),
 		},
 	}
 }
