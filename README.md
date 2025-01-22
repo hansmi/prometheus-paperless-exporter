@@ -29,9 +29,8 @@ See the `--help` output for more flags.
 
 ## Permissions
 
-Since late 2023 Paperless-ngx [supports object
-permissions][paperless-permissions]. The metrics user requires _view_
-permissions on the following types:
+The metrics user requires [_view_ permissions][paperless-permissions] on the
+following object types:
 
 * Admin
   * Required for log analysis.
@@ -40,6 +39,7 @@ permissions on the following types:
 * Correspondent
 * Document
 * DocumentType
+* Group
 * PaperlessTask
 * StoragePath
 * Tag
