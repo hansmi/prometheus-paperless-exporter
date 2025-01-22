@@ -43,6 +43,7 @@ following object types:
 * PaperlessTask
 * StoragePath
 * Tag
+* User
 
 
 ## Installation
