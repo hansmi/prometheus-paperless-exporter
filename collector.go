@@ -21,6 +21,7 @@ func newCollector(cl *client.Client, timeout time.Duration, enableRemoteNetwork 
 			newUserCollector(cl),
 			newDocumentCollector(cl),
 			newStatusCollector(cl),
+			newStatisticsCollector(cl),
 		},
 	}
 
