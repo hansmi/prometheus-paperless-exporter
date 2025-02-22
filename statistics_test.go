@@ -21,7 +21,7 @@ func (c *fakeStatisticsClient) GetStatistics(ctx context.Context) (*client.Stati
 		DocumentsInbox: 273,
 		InboxTag:       1,
 		InboxTags:      []int64{1},
-		DocumentFileTypeCounts: []client.DocumentFileType{
+		DocumentFileTypeCounts: []client.StatisticsDocumentFileType{
 			{
 				MimeType:      "application/pdf",
 				MimeTypeCount: 1397,
