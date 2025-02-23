@@ -49,6 +49,30 @@ paperless_task_status_info{status="success"} 1
 # HELP paperless_groups Number of user groups.
 # TYPE paperless_groups gauge
 paperless_groups 10
+# HELP paperless_status_celery_status Status of celery. 1 is OK, 0 is not OK.
+# TYPE paperless_status_celery_status gauge
+paperless_status_celery_status 0
+# HELP paperless_status_classifier_status Status of the classifier. 1 is OK, 0 is not OK.
+# TYPE paperless_status_classifier_status gauge
+paperless_status_classifier_status 0
+# HELP paperless_status_database_status Status of the database. 1 is OK, 0 is not OK.
+# TYPE paperless_status_database_status gauge
+paperless_status_database_status 0
+# HELP paperless_status_database_unapplied_migrations Number of unapplied database migrations.
+# TYPE paperless_status_database_unapplied_migrations gauge
+paperless_status_database_unapplied_migrations 0
+# HELP paperless_status_index_status Status of the index. 1 is OK, 0 is not OK.
+# TYPE paperless_status_index_status gauge
+paperless_status_index_status 0
+# HELP paperless_status_redis_status Status of redis. 1 is OK, 0 is not OK.
+# TYPE paperless_status_redis_status gauge
+paperless_status_redis_status 0
+# HELP paperless_status_storage_available Available storage of Paperless in bytes.
+# TYPE paperless_status_storage_available gauge
+paperless_status_storage_available 0
+# HELP paperless_status_storage_total Total storage of Paperless in bytes.
+# TYPE paperless_status_storage_total gauge
+paperless_status_storage_total 0
 # HELP paperless_users Number of users.
 # TYPE paperless_users gauge
 paperless_users 20
