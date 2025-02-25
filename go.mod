@@ -6,7 +6,7 @@ toolchain go1.22.7
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
-	github.com/google/go-cmp v0.6.0
+	github.com/google/go-cmp v0.7.0
 	github.com/hansmi/paperhooks v0.0.12
 	github.com/prometheus/client_golang v1.20.5
 	github.com/prometheus/common v0.62.0
