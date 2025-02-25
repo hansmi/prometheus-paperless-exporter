@@ -1,0 +1,118 @@
+package main
+
+import (
+	"context"
+	"errors"
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hansmi/paperhooks/pkg/client"
+	"github.com/hansmi/prometheus-paperless-exporter/internal/testutil"
+)
+
+type fakeStatusClient struct {
+	err error
+}
+
+func (c *fakeStatusClient) GetStatus(ctx context.Context) (*client.Status, *client.Response, error) {
+	return &client.Status{
+		PNGXVersion: "2.14.7",
+		ServerOS:    "Linux-6.8.12-8-pve-x86_64-with-glibc2.36",
+		InstallType: "bare-metal",
+		Storage: client.StorageStatus{
+			Total:     21474836480,
+			Available: 13406437376,
+		},
+		Database: client.DatabaseStatus{
+			Type:   "postgresql",
+			URL:    "paperlessdb",
+			Status: "OK",
+			Error:  "",
+			MigrationStatus: client.DatabaseMigrationStatus{
+				LatestMigration:     "mfa.0003_authenticator_type_uniq",
+				UnappliedMigrations: []string{},
+			},
+		},
+		Tasks: client.TasksStatus{
+			RedisURL:              "redis://localhost:6379",
+			RedisStatus:           "OK",
+			RedisError:            "",
+			CeleryStatus:          "OK",
+			IndexStatus:           "OK",
+			IndexLastModified:     "999902-21T00:01:54.773392Z",
+			IndexError:            "",
+			ClassifierStatus:      "OK",
+			ClassifierLastTrained: "999902-21T20:05:01.589548Z",
+			ClassifierError:       "",
+		},
+	}, &client.Response{}, c.err
+}
+
+func TestStatus(t *testing.T) {
+	errTest := errors.New("test error")
+
+	for _, tc := range []struct {
+		name    string
+		cl      fakeStatusClient
+		wantErr error
+	}{
+		{
+			name: "empty",
+		},
+		{
+			name: "get status fails",
+			cl: fakeStatusClient{
+				err: errTest,
+			},
+			wantErr: errTest,
+		},
+		{
+			name: "get status succeeds",
+			cl:   fakeStatusClient{},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			c := newStatusCollector(&tc.cl)
+
+			err := c.collect(context.Background(), testutil.DiscardMetrics(t))
+
+			if diff := cmp.Diff(tc.wantErr, err, cmpopts.EquateErrors()); diff != "" {
+				t.Errorf("Error diff (-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestStatusCollect(t *testing.T) {
+	cl := fakeStatusClient{}
+
+	c := newMultiCollector(newStatusCollector(&cl))
+
+	testutil.CollectAndCompare(t, c, `
+# HELP paperless_status_celery_status Status of celery. 1 is OK, 0 is not OK.
+# TYPE paperless_status_celery_status gauge
+paperless_status_celery_status 1
+# HELP paperless_status_classifier_status Status of the classifier. 1 is OK, 0 is not OK.
+# TYPE paperless_status_classifier_status gauge
+paperless_status_classifier_status 1
+# HELP paperless_status_database_status Status of the database. 1 is OK, 0 is not OK.
+# TYPE paperless_status_database_status gauge
+paperless_status_database_status 1
+# HELP paperless_status_database_unapplied_migrations Number of unapplied database migrations.
+# TYPE paperless_status_database_unapplied_migrations gauge
+paperless_status_database_unapplied_migrations 0
+# HELP paperless_status_index_status Status of the index. 1 is OK, 0 is not OK.
+# TYPE paperless_status_index_status gauge
+paperless_status_index_status 1
+# HELP paperless_status_redis_status Status of redis. 1 is OK, 0 is not OK.
+# TYPE paperless_status_redis_status gauge
+paperless_status_redis_status 1
+# HELP paperless_status_storage_available Available storage of Paperless in bytes.
+# TYPE paperless_status_storage_available gauge
+paperless_status_storage_available 1.3406437376e+10
+# HELP paperless_status_storage_total Total storage of Paperless in bytes.
+# TYPE paperless_status_storage_total gauge
+paperless_status_storage_total 2.147483648e+10
+`)
+}
