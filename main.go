@@ -21,6 +21,7 @@ import (
 var webConfig = webflag.AddFlags(kingpin.CommandLine, ":8081")
 var metricsPath = kingpin.Flag("web.telemetry-path", "Path under which to expose metrics").Default("/metrics").String()
 var disableExporterMetrics = kingpin.Flag("web.disable-exporter-metrics", "Exclude metrics about the exporter itself").Bool()
+var disableRemoteNetwork = kingpin.Flag("disable-remote-network", "Exclude calls to API endpoints that require public internet access (e.g. checking for a paperless version)").Bool()
 var timeout = kingpin.Flag("scrape-timeout", "Maximum duration for a scrape").Default("1m").Duration()
 
 func main() {
@@ -40,7 +41,7 @@ func main() {
 	}
 
 	reg := prometheus.NewPedanticRegistry()
-	reg.MustRegister(newCollector(client, *timeout))
+	reg.MustRegister(newCollector(client, *timeout, *disableRemoteNetwork))
 
 	if !*disableExporterMetrics {
 		reg.MustRegister(
