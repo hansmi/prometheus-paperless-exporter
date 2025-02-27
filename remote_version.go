@@ -42,8 +42,6 @@ func (c *remoteVersionCollector) collect(ctx context.Context, ch chan<- promethe
 	var updateAvailable float64
 	if remoteVersion.UpdateAvailable {
 		updateAvailable = 1
-	} else {
-		updateAvailable = 0
 	}
 
 	ch <- prometheus.MustNewConstMetric(c.updateAvailableDesc, prometheus.GaugeValue, updateAvailable, remoteVersion.Version)
