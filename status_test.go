@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -15,35 +16,35 @@ type fakeStatusClient struct {
 	err error
 }
 
-func (c *fakeStatusClient) GetStatus(ctx context.Context) (*client.Status, *client.Response, error) {
-	return &client.Status{
+func (c *fakeStatusClient) GetStatus(ctx context.Context) (*client.SystemStatus, *client.Response, error) {
+	return &client.SystemStatus{
 		PNGXVersion: "2.14.7",
 		ServerOS:    "Linux-6.8.12-8-pve-x86_64-with-glibc2.36",
 		InstallType: "bare-metal",
-		Storage: client.StorageStatus{
+		Storage: client.SystemStatusStorage{
 			Total:     21474836480,
 			Available: 13406437376,
 		},
-		Database: client.DatabaseStatus{
+		Database: client.SystemStatusDatabase{
 			Type:   "postgresql",
 			URL:    "paperlessdb",
 			Status: "OK",
 			Error:  "",
-			MigrationStatus: client.DatabaseMigrationStatus{
+			MigrationStatus: client.SystemStatusDatabaseMigration{
 				LatestMigration:     "mfa.0003_authenticator_type_uniq",
 				UnappliedMigrations: []string{},
 			},
 		},
-		Tasks: client.TasksStatus{
+		Tasks: client.SystemStatusTasks{
 			RedisURL:              "redis://localhost:6379",
 			RedisStatus:           "OK",
 			RedisError:            "",
 			CeleryStatus:          "OK",
 			IndexStatus:           "OK",
-			IndexLastModified:     "999902-21T00:01:54.773392Z",
+			IndexLastModified:     time.Date(2025, time.February, 21, 0, 1, 54, 773392000, time.UTC),
 			IndexError:            "",
 			ClassifierStatus:      "OK",
-			ClassifierLastTrained: "999902-21T20:05:01.589548Z",
+			ClassifierLastTrained: time.Date(2025, time.February, 21, 20, 5, 1, 589548000, time.UTC),
 			ClassifierError:       "",
 		},
 	}, &client.Response{}, c.err
