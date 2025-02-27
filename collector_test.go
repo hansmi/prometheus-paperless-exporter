@@ -12,7 +12,8 @@ import (
 	"github.com/hansmi/prometheus-paperless-exporter/internal/testutil"
 )
 
-func TestCollector(t *testing.T) {
+func TestCollectorWithoutRemoteCalls(t *testing.T) {
+	enableRemoteNetwork := false
 	contentTypeJson := mime.FormatMediaType("application/json", nil)
 
 	mux := http.NewServeMux()
@@ -32,6 +33,10 @@ func TestCollector(t *testing.T) {
 		w.Header().Set("Content-Type", contentTypeJson)
 		io.WriteString(w, `{"count": 30}`)
 	})
+	mux.HandleFunc("/api/remote_version/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", contentTypeJson)
+		io.WriteString(w, `{"version": "v2.14.7", "update_available": true}`)
+	})
 
 	ts := httptest.NewServer(mux)
 	t.Cleanup(ts.Close)
@@ -40,8 +45,7 @@ func TestCollector(t *testing.T) {
 		BaseURL: ts.URL,
 	})
 
-	c := newCollector(cl, time.Minute)
-
+	c := newCollector(cl, time.Minute, enableRemoteNetwork)
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_task_status_info Task status names.
 # TYPE paperless_task_status_info gauge
@@ -79,6 +83,59 @@ paperless_status_storage_available_bytes 0
 # HELP paperless_status_storage_total_bytes Total storage of Paperless in bytes.
 # TYPE paperless_status_storage_total_bytes gauge
 paperless_status_storage_total_bytes 0
+# HELP paperless_users Number of users.
+# TYPE paperless_users gauge
+paperless_users 20
+# HELP paperless_documents Number of documents.
+# TYPE paperless_documents gauge
+paperless_documents 30
+`)
+}
+
+func TestCollectorWithRemoteCalls(t *testing.T) {
+	enableRemoteNetwork := true
+	contentTypeJson := mime.FormatMediaType("application/json", nil)
+
+	mux := http.NewServeMux()
+	mux.Handle("/", http.NotFoundHandler())
+	mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "{}")
+	})
+	mux.HandleFunc("/api/groups/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", contentTypeJson)
+		io.WriteString(w, `{"count": 10}`)
+	})
+	mux.HandleFunc("/api/users/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", contentTypeJson)
+		io.WriteString(w, `{"count": 20}`)
+	})
+	mux.HandleFunc("/api/documents/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", contentTypeJson)
+		io.WriteString(w, `{"count": 30}`)
+	})
+	mux.HandleFunc("/api/remote_version/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", contentTypeJson)
+		io.WriteString(w, `{"version": "v2.14.7", "update_available": true}`)
+	})
+
+	ts := httptest.NewServer(mux)
+	t.Cleanup(ts.Close)
+
+	cl := client.New(client.Options{
+		BaseURL: ts.URL,
+	})
+
+	c := newCollector(cl, time.Minute, enableRemoteNetwork)
+	testutil.CollectAndCompare(t, c, `
+# HELP paperless_task_status_info Task status names.
+# TYPE paperless_task_status_info gauge
+paperless_task_status_info{status="success"} 1
+# HELP paperless_groups Number of user groups.
+# TYPE paperless_groups gauge
+paperless_groups 10
+# HELP paperless_remote_version_update_available Whether an update is available.
+# TYPE paperless_remote_version_update_available gauge
+paperless_remote_version_update_available{version="v2.14.7"} 1
 # HELP paperless_users Number of users.
 # TYPE paperless_users gauge
 paperless_users 20
