@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/hansmi/paperhooks/pkg/client"
@@ -88,7 +89,7 @@ func (c *statusCollector) collect(ctx context.Context, ch chan<- prometheus.Metr
 }
 
 func (c *statusCollector) isOK(status string) float64 {
-	if status == "OK" {
+	if strings.EqualFold(status, "OK") {
 		return 1
 	}
 
