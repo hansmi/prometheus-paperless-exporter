@@ -9,7 +9,7 @@ import (
 )
 
 type statusClient interface {
-	GetStatus(ctx context.Context) (*client.Status, *client.Response, error)
+	GetStatus(ctx context.Context) (*client.SystemStatus, *client.Response, error)
 }
 
 type statusCollector struct {
@@ -92,13 +92,7 @@ func (c *statusCollector) isOK(status string) float64 {
 	return 0
 }
 
-func (c *statusCollector) elapsedSeconds(timestamp string) (float64, error) {
-	timeFormat := "2006-01-02T15:04:05.999999Z"
-	parsedTime, err := time.Parse(timeFormat, timestamp)
-	if err != nil {
-		return float64(0), err
-	}
-
+func (c *statusCollector) elapsedSeconds(parsedTime time.Time) (float64, error) {
 	duration := time.Since(parsedTime)
 	return float64(duration.Seconds()), nil
 }
