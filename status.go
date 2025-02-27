@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"strings"
-	"time"
 
 	"github.com/hansmi/paperhooks/pkg/client"
 	"github.com/prometheus/client_golang/prometheus"
@@ -28,9 +27,6 @@ type statusCollector struct {
 	classifierLastTrainedDesc       *prometheus.Desc
 }
 
-// Only doing this to be able to unit test the collector
-var timeSince = time.Since
-
 func newStatusCollector(cl statusClient) *statusCollector {
 	return &statusCollector{
 		cl: cl,
@@ -42,9 +38,9 @@ func newStatusCollector(cl statusClient) *statusCollector {
 		redisStatusDesc:                 prometheus.NewDesc("paperless_status_redis_status", "Status of redis. 1 is OK, 0 is not OK.", nil, nil),
 		celeryStatusDesc:                prometheus.NewDesc("paperless_status_celery_status", "Status of celery. 1 is OK, 0 is not OK.", nil, nil),
 		indexStatusDesc:                 prometheus.NewDesc("paperless_status_index_status", "Status of the index. 1 is OK, 0 is not OK.", nil, nil),
-		indexLastModifiedDesc:           prometheus.NewDesc("paperless_status_index_last_modified_seconds", "Seconds since the last time the index has been modified.", nil, nil),
+		indexLastModifiedDesc:           prometheus.NewDesc("paperless_status_index_last_modified_timestamp_seconds", "Number of seconds since 01.01.1970 since the last time the index has been modified.", nil, nil),
 		classifierStatusDesc:            prometheus.NewDesc("paperless_status_classifier_status", "Status of the classifier. 1 is OK, 0 is not OK.", nil, nil),
-		classifierLastTrainedDesc:       prometheus.NewDesc("paperless_status_classifier_last_trained_seconds", "Seconds since the last time the classifier has been trained.", nil, nil),
+		classifierLastTrainedDesc:       prometheus.NewDesc("paperless_status_classifier_last_trained_timestamp_seconds", "Number of seconds since 01.01.1970 since the last time the classifier has been trained.", nil, nil),
 	}
 }
 
@@ -74,16 +70,9 @@ func (c *statusCollector) collect(ctx context.Context, ch chan<- prometheus.Metr
 	ch <- prometheus.MustNewConstMetric(c.redisStatusDesc, prometheus.GaugeValue, c.isOK(status.Tasks.RedisStatus))
 	ch <- prometheus.MustNewConstMetric(c.celeryStatusDesc, prometheus.GaugeValue, c.isOK(status.Tasks.CeleryStatus))
 	ch <- prometheus.MustNewConstMetric(c.indexStatusDesc, prometheus.GaugeValue, c.isOK(status.Tasks.IndexStatus))
-
-	if v, err := c.elapsedSeconds(status.Tasks.IndexLastModified); err == nil {
-		ch <- prometheus.MustNewConstMetric(c.indexLastModifiedDesc, prometheus.GaugeValue, v)
-	}
-
+	ch <- prometheus.MustNewConstMetric(c.indexLastModifiedDesc, prometheus.GaugeValue, float64(status.Tasks.IndexLastModified.Unix()))
 	ch <- prometheus.MustNewConstMetric(c.classifierStatusDesc, prometheus.GaugeValue, c.isOK(status.Tasks.ClassifierStatus))
-
-	if v, err := c.elapsedSeconds(status.Tasks.ClassifierLastTrained); err == nil {
-		ch <- prometheus.MustNewConstMetric(c.classifierLastTrainedDesc, prometheus.GaugeValue, v)
-	}
+	ch <- prometheus.MustNewConstMetric(c.classifierLastTrainedDesc, prometheus.GaugeValue, float64(status.Tasks.ClassifierLastTrained.Unix()))
 
 	return nil
 }
@@ -94,9 +83,4 @@ func (c *statusCollector) isOK(status string) float64 {
 	}
 
 	return 0
-}
-
-func (c *statusCollector) elapsedSeconds(parsedTime time.Time) (float64, error) {
-	duration := timeSince(parsedTime)
-	return float64(duration.Seconds()), nil
 }
