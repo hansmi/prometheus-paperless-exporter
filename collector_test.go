@@ -13,6 +13,11 @@ import (
 )
 
 func TestCollector(t *testing.T) {
+	// Mocking time.Since
+	timeSince = func(t time.Time) time.Duration {
+		return time.Duration(5000000000) // 5 seconds
+	}
+
 	contentTypeJson := mime.FormatMediaType("application/json", nil)
 
 	mux := http.NewServeMux()
@@ -52,6 +57,9 @@ paperless_groups 10
 # HELP paperless_status_celery_status Status of celery. 1 is OK, 0 is not OK.
 # TYPE paperless_status_celery_status gauge
 paperless_status_celery_status 0
+# HELP paperless_status_classifier_last_trained Seconds since the last time the classifier has been trained.
+# TYPE paperless_status_classifier_last_trained gauge
+paperless_status_classifier_last_trained 5
 # HELP paperless_status_classifier_status Status of the classifier. 1 is OK, 0 is not OK.
 # TYPE paperless_status_classifier_status gauge
 paperless_status_classifier_status 0
@@ -61,6 +69,9 @@ paperless_status_database_status 0
 # HELP paperless_status_database_unapplied_migrations Number of unapplied database migrations.
 # TYPE paperless_status_database_unapplied_migrations gauge
 paperless_status_database_unapplied_migrations 0
+# HELP paperless_status_index_last_modified Seconds since the last time the index has been modified.
+# TYPE paperless_status_index_last_modified gauge
+paperless_status_index_last_modified 5
 # HELP paperless_status_index_status Status of the index. 1 is OK, 0 is not OK.
 # TYPE paperless_status_index_status gauge
 paperless_status_index_status 0

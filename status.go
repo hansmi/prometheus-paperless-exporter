@@ -27,6 +27,9 @@ type statusCollector struct {
 	classifierLastTrainedDesc       *prometheus.Desc
 }
 
+// Only doing this to be able to unit test the collector
+var timeSince = time.Since
+
 func newStatusCollector(cl statusClient) *statusCollector {
 	return &statusCollector{
 		cl: cl,
@@ -93,6 +96,6 @@ func (c *statusCollector) isOK(status string) float64 {
 }
 
 func (c *statusCollector) elapsedSeconds(parsedTime time.Time) (float64, error) {
-	duration := time.Since(parsedTime)
+	duration := timeSince(parsedTime)
 	return float64(duration.Seconds()), nil
 }
