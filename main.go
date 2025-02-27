@@ -41,7 +41,7 @@ func main() {
 	}
 
 	reg := prometheus.NewPedanticRegistry()
-	reg.MustRegister(newCollector(client, *timeout, *disableRemoteNetwork))
+	reg.MustRegister(newCollector(client, *timeout, *enableRemoteNetwork))
 
 	if !*disableExporterMetrics {
 		reg.MustRegister(
