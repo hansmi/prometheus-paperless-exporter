@@ -51,11 +51,6 @@ func (c *fakeStatusClient) GetStatus(ctx context.Context) (*client.SystemStatus,
 }
 
 func TestStatus(t *testing.T) {
-	// Mocking time.Since
-	timeSince = func(t time.Time) time.Duration {
-		return time.Duration(5000000000) // 5 seconds
-	}
-
 	errTest := errors.New("test error")
 
 	for _, tc := range []struct {
@@ -99,9 +94,9 @@ func TestStatusCollect(t *testing.T) {
 # HELP paperless_status_celery_status Status of celery. 1 is OK, 0 is not OK.
 # TYPE paperless_status_celery_status gauge
 paperless_status_celery_status 1
-# HELP paperless_status_classifier_last_trained_seconds Seconds since the last time the classifier has been trained.
-# TYPE paperless_status_classifier_last_trained_seconds gauge
-paperless_status_classifier_last_trained_seconds 5
+# HELP paperless_status_classifier_last_trained_timestamp_seconds Number of seconds since 01.01.1970 since the last time the classifier has been trained.
+# TYPE paperless_status_classifier_last_trained_timestamp_seconds gauge
+paperless_status_classifier_last_trained_timestamp_seconds 1.740168301e+09
 # HELP paperless_status_classifier_status Status of the classifier. 1 is OK, 0 is not OK.
 # TYPE paperless_status_classifier_status gauge
 paperless_status_classifier_status 1
@@ -111,9 +106,9 @@ paperless_status_database_status 1
 # HELP paperless_status_database_unapplied_migrations Number of unapplied database migrations.
 # TYPE paperless_status_database_unapplied_migrations gauge
 paperless_status_database_unapplied_migrations 0
-# HELP paperless_status_index_last_modified_seconds Seconds since the last time the index has been modified.
-# TYPE paperless_status_index_last_modified_seconds gauge
-paperless_status_index_last_modified_seconds 5
+# HELP paperless_status_index_last_modified_timestamp_seconds Number of seconds since 01.01.1970 since the last time the index has been modified.
+# TYPE paperless_status_index_last_modified_timestamp_seconds gauge
+paperless_status_index_last_modified_timestamp_seconds 1.740096114e+09
 # HELP paperless_status_index_status Status of the index. 1 is OK, 0 is not OK.
 # TYPE paperless_status_index_status gauge
 paperless_status_index_status 1
