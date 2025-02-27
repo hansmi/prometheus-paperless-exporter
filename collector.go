@@ -7,7 +7,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-func newCollector(cl *client.Client, timeout time.Duration, disableRemoteNetwork bool) prometheus.Collector {
+func newCollector(cl *client.Client, timeout time.Duration, enableRemoteNetwork bool) prometheus.Collector {
 	multiCollector := &multiCollector{
 		timeout: timeout,
 		members: []multiCollectorMember{
@@ -25,7 +25,7 @@ func newCollector(cl *client.Client, timeout time.Duration, disableRemoteNetwork
 		},
 	}
 
-	if !disableRemoteNetwork {
+	if enableRemoteNetwork {
 		multiCollector.members = append(multiCollector.members, newRemoteVersionCollector(cl))
 	}
 
