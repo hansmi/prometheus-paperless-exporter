@@ -35,16 +35,16 @@ func newStatusCollector(cl statusClient) *statusCollector {
 	return &statusCollector{
 		cl: cl,
 
-		storageTotalDesc:                prometheus.NewDesc("paperless_status_storage_total", "Total storage of Paperless in bytes.", nil, nil),
-		storageAvailableDesc:            prometheus.NewDesc("paperless_status_storage_available", "Available storage of Paperless in bytes.", nil, nil),
+		storageTotalDesc:                prometheus.NewDesc("paperless_status_storage_total_bytes", "Total storage of Paperless in bytes.", nil, nil),
+		storageAvailableDesc:            prometheus.NewDesc("paperless_status_storage_available_bytes", "Available storage of Paperless in bytes.", nil, nil),
 		databaseStatusDesc:              prometheus.NewDesc("paperless_status_database_status", "Status of the database. 1 is OK, 0 is not OK.", nil, nil),
 		databaseUnappliedMigrationsDesc: prometheus.NewDesc("paperless_status_database_unapplied_migrations", "Number of unapplied database migrations.", nil, nil),
 		redisStatusDesc:                 prometheus.NewDesc("paperless_status_redis_status", "Status of redis. 1 is OK, 0 is not OK.", nil, nil),
 		celeryStatusDesc:                prometheus.NewDesc("paperless_status_celery_status", "Status of celery. 1 is OK, 0 is not OK.", nil, nil),
 		indexStatusDesc:                 prometheus.NewDesc("paperless_status_index_status", "Status of the index. 1 is OK, 0 is not OK.", nil, nil),
-		indexLastModifiedDesc:           prometheus.NewDesc("paperless_status_index_last_modified", "Seconds since the last time the index has been modified.", nil, nil),
+		indexLastModifiedDesc:           prometheus.NewDesc("paperless_status_index_last_modified_seconds", "Seconds since the last time the index has been modified.", nil, nil),
 		classifierStatusDesc:            prometheus.NewDesc("paperless_status_classifier_status", "Status of the classifier. 1 is OK, 0 is not OK.", nil, nil),
-		classifierLastTrainedDesc:       prometheus.NewDesc("paperless_status_classifier_last_trained", "Seconds since the last time the classifier has been trained.", nil, nil),
+		classifierLastTrainedDesc:       prometheus.NewDesc("paperless_status_classifier_last_trained_seconds", "Seconds since the last time the classifier has been trained.", nil, nil),
 	}
 }
 
