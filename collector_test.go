@@ -136,6 +136,36 @@ paperless_groups 10
 # HELP paperless_remote_version_update_available Whether an update is available.
 # TYPE paperless_remote_version_update_available gauge
 paperless_remote_version_update_available{version="v2.14.7"} 1
+# HELP paperless_status_celery_status Status of celery. 1 is OK, 0 is not OK.
+# TYPE paperless_status_celery_status gauge
+paperless_status_celery_status 0
+# HELP paperless_status_classifier_last_trained_timestamp_seconds Number of seconds since 01.01.1970 since the last time the classifier has been trained.
+# TYPE paperless_status_classifier_last_trained_timestamp_seconds gauge
+paperless_status_classifier_last_trained_timestamp_seconds -6.21355968e+10
+# HELP paperless_status_classifier_status Status of the classifier. 1 is OK, 0 is not OK.
+# TYPE paperless_status_classifier_status gauge
+paperless_status_classifier_status 0
+# HELP paperless_status_database_status Status of the database. 1 is OK, 0 is not OK.
+# TYPE paperless_status_database_status gauge
+paperless_status_database_status 0
+# HELP paperless_status_database_unapplied_migrations Number of unapplied database migrations.
+# TYPE paperless_status_database_unapplied_migrations gauge
+paperless_status_database_unapplied_migrations 0
+# HELP paperless_status_index_last_modified_timestamp_seconds Number of seconds since 01.01.1970 since the last time the index has been modified.
+# TYPE paperless_status_index_last_modified_timestamp_seconds gauge
+paperless_status_index_last_modified_timestamp_seconds -6.21355968e+10
+# HELP paperless_status_index_status Status of the index. 1 is OK, 0 is not OK.
+# TYPE paperless_status_index_status gauge
+paperless_status_index_status 0
+# HELP paperless_status_redis_status Status of redis. 1 is OK, 0 is not OK.
+# TYPE paperless_status_redis_status gauge
+paperless_status_redis_status 0
+# HELP paperless_status_storage_available_bytes Available storage of Paperless in bytes.
+# TYPE paperless_status_storage_available_bytes gauge
+paperless_status_storage_available_bytes 0
+# HELP paperless_status_storage_total_bytes Total storage of Paperless in bytes.
+# TYPE paperless_status_storage_total_bytes gauge
+paperless_status_storage_total_bytes 0
 # HELP paperless_users Number of users.
 # TYPE paperless_users gauge
 paperless_users 20
