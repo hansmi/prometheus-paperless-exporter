@@ -157,6 +157,27 @@ paperless_groups 10
 # HELP paperless_remote_version_update_available Whether an update is available.
 # TYPE paperless_remote_version_update_available gauge
 paperless_remote_version_update_available{version="v2.14.7"} 1
+# HELP paperless_statistics_character_count Number of characters stored across the total number of documents.
+# TYPE paperless_statistics_character_count gauge
+paperless_statistics_character_count 0
+# HELP paperless_statistics_correspondent_count Total number of correspondents.
+# TYPE paperless_statistics_correspondent_count gauge
+paperless_statistics_correspondent_count 0
+# HELP paperless_statistics_document_type_count Total number of document types.
+# TYPE paperless_statistics_document_type_count gauge
+paperless_statistics_document_type_count 0
+# HELP paperless_statistics_documents_inbox_count Total number of documents that have the defined 'Inbox' tag.
+# TYPE paperless_statistics_documents_inbox_count gauge
+paperless_statistics_documents_inbox_count 0
+# HELP paperless_statistics_documents_total Total number of documents.
+# TYPE paperless_statistics_documents_total gauge
+paperless_statistics_documents_total 0
+# HELP paperless_statistics_storage_path_count Total number of storage pathes.
+# TYPE paperless_statistics_storage_path_count gauge
+paperless_statistics_storage_path_count 0
+# HELP paperless_statistics_tag_count Total number of tags.
+# TYPE paperless_statistics_tag_count gauge
+paperless_statistics_tag_count 0
 # HELP paperless_status_celery_status Status of celery. 1 is OK, 0 is not OK.
 # TYPE paperless_status_celery_status gauge
 paperless_status_celery_status 0
