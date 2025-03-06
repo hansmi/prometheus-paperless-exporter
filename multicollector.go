@@ -36,6 +36,18 @@ func (c *multiCollector) Describe(ch chan<- *prometheus.Desc) {
 	}
 }
 
+func (c *multiCollector) collect(ctx context.Context, ch chan<- prometheus.Metric) error {
+	g, ctx := errgroup.WithContext(ctx)
+	g.SetLimit(runtime.GOMAXPROCS(0))
+
+	for _, i := range c.members {
+		collect := i.collect
+		g.Go(func() error { return collect(ctx, ch) })
+	}
+
+	return g.Wait()
+}
+
 func (c *multiCollector) Collect(ch chan<- prometheus.Metric) {
 	ctx := context.Background()
 
@@ -45,15 +57,7 @@ func (c *multiCollector) Collect(ch chan<- prometheus.Metric) {
 		defer cancel()
 	}
 
-	g, ctx := errgroup.WithContext(ctx)
-	g.SetLimit(runtime.GOMAXPROCS(0))
-
-	for _, i := range c.members {
-		collect := i.collect
-		g.Go(func() error { return collect(ctx, ch) })
-	}
-
-	if err := g.Wait(); err != nil {
+	if err := c.collect(ctx, ch); err != nil {
 		log.Printf("Metrics collection failed: %v", err.Error())
 		ch <- prometheus.NewInvalidMetric(
 			prometheus.NewDesc("paperless_error", "Metrics collection failed", nil, nil),
