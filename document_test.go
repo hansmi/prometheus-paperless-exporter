@@ -66,7 +66,11 @@ func TestDocumentCollect(t *testing.T) {
 
 	c := newMultiCollector(newDocumentCollector(&cl))
 
-	testutil.CollectAndCompare(t, c, ``)
+	testutil.CollectAndCompare(t, c, `
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`)
 
 	cl.count = 11921
 
@@ -74,5 +78,8 @@ func TestDocumentCollect(t *testing.T) {
 # HELP paperless_documents Number of documents.
 # TYPE paperless_documents gauge
 paperless_documents 11921
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 }

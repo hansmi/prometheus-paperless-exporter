@@ -75,7 +75,11 @@ func TestTagCollect(t *testing.T) {
 
 	c := newMultiCollector(newTagCollector(&cl))
 
-	testutil.CollectAndCompare(t, c, ``)
+	testutil.CollectAndCompare(t, c, `
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`)
 
 	cl.items = append(cl.items, []client.Tag{
 		{ID: 8463, Name: "aaa", Slug: "aslug"},
@@ -103,5 +107,8 @@ paperless_tag_info{id="26429",name="last",slug=""} 1
 paperless_tag_info{id="2930",name="mybox",slug="mb"} 1
 paperless_tag_info{id="338",name="three-three-eight",slug=""} 1
 paperless_tag_info{id="8463",name="aaa",slug="aslug"} 1
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 }

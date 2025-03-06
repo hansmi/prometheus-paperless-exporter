@@ -121,5 +121,8 @@ paperless_status_storage_available_bytes 1.3406437376e+10
 # HELP paperless_status_storage_total_bytes Total storage of Paperless in bytes.
 # TYPE paperless_status_storage_total_bytes gauge
 paperless_status_storage_total_bytes 2.147483648e+10
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 }

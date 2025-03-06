@@ -72,7 +72,11 @@ func TestDocumentTypeCollect(t *testing.T) {
 
 	c := newMultiCollector(newDocumentTypeCollector(&cl))
 
-	testutil.CollectAndCompare(t, c, ``)
+	testutil.CollectAndCompare(t, c, `
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`)
 
 	cl.items = append(cl.items, []client.DocumentType{
 		{ID: 3760, Name: "Contract", Slug: "contract"},
@@ -88,5 +92,8 @@ paperless_document_type_document_count{id="5558"} 20
 # TYPE paperless_document_type_info gauge
 paperless_document_type_info{id="3760",name="Contract",slug="contract"} 1
 paperless_document_type_info{id="5558",name="Purchase order",slug="po"} 1
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 }

@@ -26,8 +26,8 @@ func newCollector(cl *client.Client, timeout time.Duration, enableRemoteNetwork 
 		members = append(members, newRemoteVersionCollector(cl))
 	}
 
-	return &multiCollector{
-		timeout: timeout,
-		members: members,
-	}
+	c := newMultiCollector(members...)
+	c.timeout = timeout
+
+	return c
 }
