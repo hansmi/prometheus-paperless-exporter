@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hansmi/paperhooks/pkg/client"
 	"github.com/prometheus/client_golang/prometheus"
@@ -30,21 +31,19 @@ func (c *remoteVersionCollector) describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c *remoteVersionCollector) collect(ctx context.Context, ch chan<- prometheus.Metric) error {
-	remoteVersion, _, err := c.cl.GetRemoteVersion(ctx)
-	if err != nil {
-		return err
-	}
-
-	if len(remoteVersion.Version) == 0 {
-		return nil
-	}
-
 	var updateAvailable float64
-	if remoteVersion.UpdateAvailable {
+	var version string
+
+	if remoteVersion, _, err := c.cl.GetRemoteVersion(ctx); err != nil {
+		ch <- newWarning(fmt.Errorf("fetching remote version: %w", err))
+	} else if len(remoteVersion.Version) == 0 {
+		return nil
+	} else if remoteVersion.UpdateAvailable {
 		updateAvailable = 1
+		version = remoteVersion.Version
 	}
 
-	ch <- prometheus.MustNewConstMetric(c.updateAvailableDesc, prometheus.GaugeValue, updateAvailable, remoteVersion.Version)
+	ch <- prometheus.MustNewConstMetric(c.updateAvailableDesc, prometheus.GaugeValue, updateAvailable, version)
 
 	return nil
 }

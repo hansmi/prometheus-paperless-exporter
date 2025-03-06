@@ -38,7 +38,6 @@ func TestRemoteVersion(t *testing.T) {
 			cl: fakeRemoteVersionClient{
 				err: errTest,
 			},
-			wantErr: errTest,
 		},
 		{
 			name: "remote version suceeds",
@@ -58,16 +57,45 @@ func TestRemoteVersion(t *testing.T) {
 }
 
 func TestRemoteVersionCollect(t *testing.T) {
-	cl := fakeRemoteVersionClient{}
+	errTest := errors.New("test error")
 
-	c := newMultiCollector(newRemoteVersionCollector(&cl))
-
-	testutil.CollectAndCompare(t, c, `
+	for _, tc := range []struct {
+		name string
+		err  error
+		want string
+	}{
+		{
+			name: "success",
+			want: `
 # HELP paperless_remote_version_update_available Whether an update is available.
 # TYPE paperless_remote_version_update_available gauge
 paperless_remote_version_update_available{version="1.2.3"} 1
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
 paperless_warnings_total 0
-`)
+`,
+		},
+		{
+			name: "failure",
+			err:  errTest,
+			want: `
+# HELP paperless_remote_version_update_available Whether an update is available.
+# TYPE paperless_remote_version_update_available gauge
+paperless_remote_version_update_available{version=""} 0
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 1
+`,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			cl := fakeRemoteVersionClient{
+				err: tc.err,
+			}
+
+			c := newMultiCollector(newRemoteVersionCollector(&cl))
+
+			testutil.CollectAndCompare(t, c, tc.want)
+		})
+	}
 }
