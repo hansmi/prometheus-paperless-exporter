@@ -118,11 +118,19 @@ func TestLogCollect(t *testing.T) {
 
 	c := newMultiCollector(newLogCollector(&cl))
 
-	testutil.CollectAndCompare(t, c, "")
+	testutil.CollectAndCompare(t, c, `
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`)
 
 	cl.names = append(cl.names, "server", "db", "not found")
 
-	testutil.CollectAndCompare(t, c, "")
+	testutil.CollectAndCompare(t, c, `
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`)
 
 	cl.addEntries("server", []client.LogEntry{
 		{
@@ -141,6 +149,9 @@ func TestLogCollect(t *testing.T) {
 # TYPE paperless_log_entries_total counter
 paperless_log_entries_total{level="",module="storage",name="server"} 1
 paperless_log_entries_total{level="another",module="storage",name="server"} 1
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 
 	cl.addEntries("server", []client.LogEntry{
@@ -163,6 +174,9 @@ paperless_log_entries_total{level="another",module="storage",name="server"} 1
 paperless_log_entries_total{level="",module="",name="db"} 1
 paperless_log_entries_total{level="",module="storage",name="server"} 2
 paperless_log_entries_total{level="another",module="storage",name="server"} 1
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 
 		// Reset logs
