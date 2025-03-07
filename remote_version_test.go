@@ -68,7 +68,7 @@ func TestRemoteVersionCollect(t *testing.T) {
 		want string
 	}{
 		{
-			name: "success",
+			name: "available",
 			cl: fakeRemoteVersionClient{
 				result: client.RemoteVersion{
 					UpdateAvailable: true,
@@ -79,6 +79,23 @@ func TestRemoteVersionCollect(t *testing.T) {
 # HELP paperless_remote_version_update_available Whether an update is available.
 # TYPE paperless_remote_version_update_available gauge
 paperless_remote_version_update_available{version="1.2.3"} 1
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`,
+		},
+		{
+			name: "no update",
+			cl: fakeRemoteVersionClient{
+				result: client.RemoteVersion{
+					UpdateAvailable: false,
+					Version:         "1.2.3",
+				},
+			},
+			want: `
+# HELP paperless_remote_version_update_available Whether an update is available.
+# TYPE paperless_remote_version_update_available gauge
+paperless_remote_version_update_available{version="1.2.3"} 0
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
 paperless_warnings_total 0
