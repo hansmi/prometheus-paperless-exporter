@@ -12,14 +12,12 @@ import (
 )
 
 type fakeRemoteVersionClient struct {
-	err error
+	result client.RemoteVersion
+	err    error
 }
 
 func (c *fakeRemoteVersionClient) GetRemoteVersion(ctx context.Context) (*client.RemoteVersion, *client.Response, error) {
-	return &client.RemoteVersion{
-		UpdateAvailable: true,
-		Version:         "1.2.3",
-	}, &client.Response{}, c.err
+	return &c.result, &client.Response{}, c.err
 }
 
 func TestRemoteVersion(t *testing.T) {
@@ -41,7 +39,12 @@ func TestRemoteVersion(t *testing.T) {
 		},
 		{
 			name: "remote version suceeds",
-			cl:   fakeRemoteVersionClient{},
+			cl: fakeRemoteVersionClient{
+				result: client.RemoteVersion{
+					UpdateAvailable: true,
+					Version:         "1.2.3",
+				},
+			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -61,11 +64,17 @@ func TestRemoteVersionCollect(t *testing.T) {
 
 	for _, tc := range []struct {
 		name string
-		err  error
+		cl   fakeRemoteVersionClient
 		want string
 	}{
 		{
 			name: "success",
+			cl: fakeRemoteVersionClient{
+				result: client.RemoteVersion{
+					UpdateAvailable: true,
+					Version:         "1.2.3",
+				},
+			},
 			want: `
 # HELP paperless_remote_version_update_available Whether an update is available.
 # TYPE paperless_remote_version_update_available gauge
@@ -77,7 +86,9 @@ paperless_warnings_total 0
 		},
 		{
 			name: "failure",
-			err:  errTest,
+			cl: fakeRemoteVersionClient{
+				err: errTest,
+			},
 			want: `
 # HELP paperless_remote_version_update_available Whether an update is available.
 # TYPE paperless_remote_version_update_available gauge
@@ -89,11 +100,7 @@ paperless_warnings_total 1
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			cl := fakeRemoteVersionClient{
-				err: tc.err,
-			}
-
-			c := newMultiCollectorForTest(t, newRemoteVersionCollector(&cl))
+			c := newMultiCollectorForTest(t, newRemoteVersionCollector(&tc.cl))
 
 			testutil.CollectAndCompare(t, c, tc.want)
 		})
