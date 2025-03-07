@@ -36,11 +36,14 @@ func (c *remoteVersionCollector) collect(ctx context.Context, ch chan<- promethe
 
 	if remoteVersion, _, err := c.cl.GetRemoteVersion(ctx); err != nil {
 		ch <- newWarning(fmt.Errorf("fetching remote version: %w", err))
-	} else if len(remoteVersion.Version) == 0 {
+	} else if remoteVersion.Version == "" {
 		return nil
-	} else if remoteVersion.UpdateAvailable {
-		updateAvailable = 1
+	} else {
 		version = remoteVersion.Version
+
+		if remoteVersion.UpdateAvailable {
+			updateAvailable = 1
+		}
 	}
 
 	ch <- prometheus.MustNewConstMetric(c.updateAvailableDesc, prometheus.GaugeValue, updateAvailable, version)
