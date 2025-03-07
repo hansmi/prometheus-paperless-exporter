@@ -102,6 +102,22 @@ paperless_warnings_total 0
 `,
 		},
 		{
+			name: "no version",
+			cl: fakeRemoteVersionClient{
+				result: client.RemoteVersion{
+					UpdateAvailable: true,
+				},
+			},
+			want: `
+# HELP paperless_remote_version_update_available Whether an update is available.
+# TYPE paperless_remote_version_update_available gauge
+paperless_remote_version_update_available{version=""} 1
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`,
+		},
+		{
 			name: "failure",
 			cl: fakeRemoteVersionClient{
 				err: errTest,
