@@ -81,7 +81,7 @@ func TestStatistics(t *testing.T) {
 func TestStatisticsCollect(t *testing.T) {
 	cl := fakeStatisticsClient{}
 
-	c := newMultiCollector(newStatisticsCollector(&cl))
+	c := newMultiCollectorForTest(t, newStatisticsCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_statistics_character_count Number of characters stored across the total number of documents.
