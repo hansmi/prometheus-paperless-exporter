@@ -70,7 +70,7 @@ func TestStoragePath(t *testing.T) {
 func TestStoragePathCollect(t *testing.T) {
 	cl := fakeStoragePathClient{}
 
-	c := newMultiCollector(newStoragePathCollector(&cl))
+	c := newMultiCollectorForTest(t, newStoragePathCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.

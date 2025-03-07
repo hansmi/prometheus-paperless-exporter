@@ -116,7 +116,7 @@ func TestLogCollect(t *testing.T) {
 		entries: map[string][]client.LogEntry{},
 	}
 
-	c := newMultiCollector(newLogCollector(&cl))
+	c := newMultiCollectorForTest(t, newLogCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.

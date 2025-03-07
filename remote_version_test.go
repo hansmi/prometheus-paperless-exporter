@@ -93,7 +93,7 @@ paperless_warnings_total 1
 				err: tc.err,
 			}
 
-			c := newMultiCollector(newRemoteVersionCollector(&cl))
+			c := newMultiCollectorForTest(t, newRemoteVersionCollector(&cl))
 
 			testutil.CollectAndCompare(t, c, tc.want)
 		})

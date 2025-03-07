@@ -64,7 +64,7 @@ func TestUserCollect(t *testing.T) {
 		count: client.ItemCountUnknown,
 	}
 
-	c := newMultiCollector(newUserCollector(&cl))
+	c := newMultiCollectorForTest(t, newUserCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.

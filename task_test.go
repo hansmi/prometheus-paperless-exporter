@@ -63,7 +63,7 @@ func TestTask(t *testing.T) {
 func TestTaskCollect(t *testing.T) {
 	cl := fakeTaskClient{}
 
-	c := newMultiCollector(newTaskCollector(&cl))
+	c := newMultiCollectorForTest(t, newTaskCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_task_status_info Task status names.
