@@ -72,7 +72,7 @@ func TestCorrespondent(t *testing.T) {
 func TestCorrespondentCollect(t *testing.T) {
 	cl := fakeCorrespondentClient{}
 
-	c := newMultiCollector(newCorrespondentCollector(&cl))
+	c := newMultiCollectorForTest(t, newCorrespondentCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.

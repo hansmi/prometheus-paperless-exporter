@@ -88,7 +88,7 @@ func TestStatus(t *testing.T) {
 func TestStatusCollect(t *testing.T) {
 	cl := fakeStatusClient{}
 
-	c := newMultiCollector(newStatusCollector(&cl))
+	c := newMultiCollectorForTest(t, newStatusCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_status_celery_status Status of celery. 1 is OK, 0 is not OK.

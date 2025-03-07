@@ -70,7 +70,7 @@ func TestDocumentType(t *testing.T) {
 func TestDocumentTypeCollect(t *testing.T) {
 	cl := fakeDocumentTypeClient{}
 
-	c := newMultiCollector(newDocumentTypeCollector(&cl))
+	c := newMultiCollectorForTest(t, newDocumentTypeCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.

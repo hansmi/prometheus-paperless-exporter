@@ -73,7 +73,7 @@ func TestTag(t *testing.T) {
 func TestTagCollect(t *testing.T) {
 	cl := fakeTagClient{}
 
-	c := newMultiCollector(newTagCollector(&cl))
+	c := newMultiCollectorForTest(t, newTagCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
