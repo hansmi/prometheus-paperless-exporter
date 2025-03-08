@@ -72,9 +72,13 @@ func TestCorrespondent(t *testing.T) {
 func TestCorrespondentCollect(t *testing.T) {
 	cl := fakeCorrespondentClient{}
 
-	c := newMultiCollector(newCorrespondentCollector(&cl))
+	c := newMultiCollectorForTest(t, newCorrespondentCollector(&cl))
 
-	testutil.CollectAndCompare(t, c, ``)
+	testutil.CollectAndCompare(t, c, `
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`)
 
 	cl.items = append(cl.items, []client.Correspondent{
 		{ID: 15818, Name: "bank", Slug: "aslug"},
@@ -103,5 +107,8 @@ paperless_correspondent_info{id="24467",name="employer",slug=""} 1
 paperless_correspondent_last_correspondence_timestamp_seconds{id="15818"} 0
 paperless_correspondent_last_correspondence_timestamp_seconds{id="167"} 1.5619392e+09
 paperless_correspondent_last_correspondence_timestamp_seconds{id="24467"} 0
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 }

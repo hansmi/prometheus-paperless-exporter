@@ -63,12 +63,15 @@ func TestTask(t *testing.T) {
 func TestTaskCollect(t *testing.T) {
 	cl := fakeTaskClient{}
 
-	c := newMultiCollector(newTaskCollector(&cl))
+	c := newMultiCollectorForTest(t, newTaskCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_task_status_info Task status names.
 # TYPE paperless_task_status_info gauge
 paperless_task_status_info{status="success"} 1
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 
 	cl.tasks = append(cl.tasks, client.Task{
@@ -96,5 +99,8 @@ paperless_task_status{id="31563",status="statusunspecified"} 1
 # TYPE paperless_task_status_info gauge
 paperless_task_status_info{status="statusunspecified"} 1
 paperless_task_status_info{status="success"} 1
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 }

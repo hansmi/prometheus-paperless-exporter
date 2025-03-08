@@ -64,9 +64,13 @@ func TestGroupCollect(t *testing.T) {
 		count: client.ItemCountUnknown,
 	}
 
-	c := newMultiCollector(newGroupCollector(&cl))
+	c := newMultiCollectorForTest(t, newGroupCollector(&cl))
 
-	testutil.CollectAndCompare(t, c, ``)
+	testutil.CollectAndCompare(t, c, `
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`)
 
 	cl.count = 321
 
@@ -74,5 +78,8 @@ func TestGroupCollect(t *testing.T) {
 # HELP paperless_groups Number of user groups.
 # TYPE paperless_groups gauge
 paperless_groups 321
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 }

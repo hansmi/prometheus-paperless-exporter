@@ -81,7 +81,7 @@ func TestStatistics(t *testing.T) {
 func TestStatisticsCollect(t *testing.T) {
 	cl := fakeStatisticsClient{}
 
-	c := newMultiCollector(newStatisticsCollector(&cl))
+	c := newMultiCollectorForTest(t, newStatisticsCollector(&cl))
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_statistics_character_count Number of characters stored across the total number of documents.
@@ -109,5 +109,8 @@ paperless_statistics_storage_path_count 0
 # HELP paperless_statistics_tag_count Total number of tags.
 # TYPE paperless_statistics_tag_count gauge
 paperless_statistics_tag_count 55
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
 `)
 }

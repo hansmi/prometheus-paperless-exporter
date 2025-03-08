@@ -12,14 +12,12 @@ import (
 )
 
 type fakeRemoteVersionClient struct {
-	err error
+	result client.RemoteVersion
+	err    error
 }
 
 func (c *fakeRemoteVersionClient) GetRemoteVersion(ctx context.Context) (*client.RemoteVersion, *client.Response, error) {
-	return &client.RemoteVersion{
-		UpdateAvailable: true,
-		Version:         "1.2.3",
-	}, &client.Response{}, c.err
+	return &c.result, &client.Response{}, c.err
 }
 
 func TestRemoteVersion(t *testing.T) {
@@ -38,11 +36,15 @@ func TestRemoteVersion(t *testing.T) {
 			cl: fakeRemoteVersionClient{
 				err: errTest,
 			},
-			wantErr: errTest,
 		},
 		{
 			name: "remote version suceeds",
-			cl:   fakeRemoteVersionClient{},
+			cl: fakeRemoteVersionClient{
+				result: client.RemoteVersion{
+					UpdateAvailable: true,
+					Version:         "1.2.3",
+				},
+			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -58,13 +60,82 @@ func TestRemoteVersion(t *testing.T) {
 }
 
 func TestRemoteVersionCollect(t *testing.T) {
-	cl := fakeRemoteVersionClient{}
+	errTest := errors.New("test error")
 
-	c := newMultiCollector(newRemoteVersionCollector(&cl))
-
-	testutil.CollectAndCompare(t, c, `
+	for _, tc := range []struct {
+		name string
+		cl   fakeRemoteVersionClient
+		want string
+	}{
+		{
+			name: "available",
+			cl: fakeRemoteVersionClient{
+				result: client.RemoteVersion{
+					UpdateAvailable: true,
+					Version:         "1.2.3",
+				},
+			},
+			want: `
 # HELP paperless_remote_version_update_available Whether an update is available.
 # TYPE paperless_remote_version_update_available gauge
 paperless_remote_version_update_available{version="1.2.3"} 1
-`)
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`,
+		},
+		{
+			name: "no update",
+			cl: fakeRemoteVersionClient{
+				result: client.RemoteVersion{
+					UpdateAvailable: false,
+					Version:         "1.2.3",
+				},
+			},
+			want: `
+# HELP paperless_remote_version_update_available Whether an update is available.
+# TYPE paperless_remote_version_update_available gauge
+paperless_remote_version_update_available{version="1.2.3"} 0
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`,
+		},
+		{
+			name: "no version",
+			cl: fakeRemoteVersionClient{
+				result: client.RemoteVersion{
+					UpdateAvailable: true,
+				},
+			},
+			want: `
+# HELP paperless_remote_version_update_available Whether an update is available.
+# TYPE paperless_remote_version_update_available gauge
+paperless_remote_version_update_available{version=""} 1
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 0
+`,
+		},
+		{
+			name: "failure",
+			cl: fakeRemoteVersionClient{
+				err: errTest,
+			},
+			want: `
+# HELP paperless_remote_version_update_available Whether an update is available.
+# TYPE paperless_remote_version_update_available gauge
+paperless_remote_version_update_available{version=""} 0
+# HELP paperless_warnings_total Number of warnings generated while scraping metrics.
+# TYPE paperless_warnings_total gauge
+paperless_warnings_total 1
+`,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			c := newMultiCollectorForTest(t, newRemoteVersionCollector(&tc.cl))
+
+			testutil.CollectAndCompare(t, c, tc.want)
+		})
+	}
 }
