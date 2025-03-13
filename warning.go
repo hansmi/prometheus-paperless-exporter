@@ -7,6 +7,14 @@ import (
 	dto "github.com/prometheus/client_model/go"
 )
 
+//go:generate go run golang.org/x/tools/cmd/stringer -linecomment -type=warningCategory -output=warning_string.go
+type warningCategory int
+
+const (
+	warningCategoryUnspecified      warningCategory = iota // unspecified
+	warningCategoryGetRemoteVersion                        // get_remote_version
+)
+
 // warning is a special form of a metric and suitable for reporting non-fatal
 // errors during a scrape. Warnings are only logged and not forwarded to the
 // registry.
