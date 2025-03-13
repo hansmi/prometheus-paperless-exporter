@@ -69,7 +69,7 @@ func newMultiCollector(m ...multiCollectorMember) *multiCollector {
 		logger: log.Default(),
 		warningsDesc: prometheus.NewDesc("paperless_warnings_total",
 			"Number of warnings generated while scraping metrics.",
-			nil, nil),
+			[]string{"category"}, nil),
 		members: m,
 	}
 }
@@ -97,22 +97,27 @@ func (c *multiCollector) collectWithWarnings(ctx context.Context, ch chan<- prom
 	go func() {
 		defer wg.Done()
 
-		var warnings []error
+		warnings := map[warningCategory][]error{
+			warningCategoryUnspecified: nil,
+		}
 
 		for m := range collected {
 			if warning, ok := m.(*warning); ok && warning != nil {
-				warnings = append(warnings, warning.err)
+				warnings[warning.category] = append(warnings[warning.category], warning.err)
 				continue
 			}
 
 			ch <- m
 		}
 
-		if len(warnings) > 0 {
-			c.logger.Printf("Metrics collection warnings: %q", warnings)
+		if msg := formatWarnings(warnings); msg != "" {
+			c.logger.Printf("Metrics collection warnings:\n%s", msg)
 		}
 
-		ch <- prometheus.MustNewConstMetric(c.warningsDesc, prometheus.GaugeValue, float64(len(warnings)))
+		for category, i := range warnings {
+			ch <- prometheus.MustNewConstMetric(c.warningsDesc, prometheus.GaugeValue, float64(len(i)),
+				category.String())
+		}
 	}()
 
 	g, ctx := errgroup.WithContext(ctx)

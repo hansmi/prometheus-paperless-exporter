@@ -16,16 +16,17 @@ const (
 )
 
 // warning is a special form of a metric and suitable for reporting non-fatal
-// errors during a scrape. Warnings are only logged and not forwarded to the
-// registry.
+// errors during a scrape. Warning messages are logged and counts per category
+// reported as a metric.
 type warning struct {
-	err error
+	category warningCategory
+	err      error
 }
 
 var _ prometheus.Metric = (*warning)(nil)
 
-func newWarning(err error) *warning {
-	return &warning{err}
+func newWarning(category warningCategory, err error) *warning {
+	return &warning{category, err}
 }
 
 func (*warning) Desc() *prometheus.Desc {
