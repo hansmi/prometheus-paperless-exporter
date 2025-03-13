@@ -77,7 +77,7 @@ func TestCorrespondentCollect(t *testing.T) {
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 
 	cl.items = append(cl.items, []client.Correspondent{
@@ -109,6 +109,6 @@ paperless_correspondent_last_correspondence_timestamp_seconds{id="167"} 1.561939
 paperless_correspondent_last_correspondence_timestamp_seconds{id="24467"} 0
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 }

@@ -121,7 +121,7 @@ paperless_users 20
 paperless_documents 30
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 
 			if enableRemoteNetwork {
