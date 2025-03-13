@@ -71,7 +71,7 @@ func TestTaskCollect(t *testing.T) {
 paperless_task_status_info{status="success"} 1
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 
 	cl.tasks = append(cl.tasks, client.Task{
@@ -101,6 +101,6 @@ paperless_task_status_info{status="statusunspecified"} 1
 paperless_task_status_info{status="success"} 1
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 }

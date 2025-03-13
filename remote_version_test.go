@@ -81,7 +81,7 @@ func TestRemoteVersionCollect(t *testing.T) {
 paperless_remote_version_update_available{version="1.2.3"} 1
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `,
 		},
 		{
@@ -98,7 +98,7 @@ paperless_warnings_total 0
 paperless_remote_version_update_available{version="1.2.3"} 0
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `,
 		},
 		{
@@ -114,7 +114,7 @@ paperless_warnings_total 0
 paperless_remote_version_update_available{version=""} 1
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `,
 		},
 		{
@@ -128,7 +128,8 @@ paperless_warnings_total 0
 paperless_remote_version_update_available{version=""} 0
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 1
+paperless_warnings_total{category="get_remote_version"} 1
+paperless_warnings_total{category="unspecified"} 0
 `,
 		},
 	} {
