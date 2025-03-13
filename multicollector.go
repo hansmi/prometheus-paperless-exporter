@@ -1,15 +1,50 @@
 package main
 
 import (
+	"cmp"
 	"context"
+	"fmt"
 	"log"
+	"maps"
 	"runtime"
+	"slices"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"golang.org/x/sync/errgroup"
 )
+
+func formatWarnings(warnings map[warningCategory][]error) string {
+	categories := slices.SortedFunc(maps.Keys(warnings), func(a, b warningCategory) int {
+		return cmp.Compare(a.String(), b.String())
+	})
+
+	var buf strings.Builder
+
+	for _, i := range categories {
+		var messages []string
+
+		for _, err := range warnings[i] {
+			messages = append(messages, err.Error())
+		}
+
+		if len(messages) == 0 {
+			continue
+		}
+
+		if buf.Len() > 0 {
+			buf.WriteByte('\n')
+		}
+
+		slices.Sort(messages)
+
+		fmt.Fprintf(&buf, "%s: %q", i.String(), messages)
+	}
+
+	return buf.String()
+}
 
 type multiCollectorMember interface {
 	describe(chan<- *prometheus.Desc)
