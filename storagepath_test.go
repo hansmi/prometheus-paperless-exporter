@@ -75,7 +75,7 @@ func TestStoragePathCollect(t *testing.T) {
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 
 	cl.items = append(cl.items, []client.StoragePath{
@@ -94,6 +94,6 @@ paperless_storage_path_info{id="23547",name="personal",slug="personal"} 1
 paperless_storage_path_info{id="704",name="work",slug=""} 1
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 }

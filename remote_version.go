@@ -35,7 +35,7 @@ func (c *remoteVersionCollector) collect(ctx context.Context, ch chan<- promethe
 	var version string
 
 	if remoteVersion, _, err := c.cl.GetRemoteVersion(ctx); err != nil {
-		ch <- newWarning(fmt.Errorf("fetching remote version: %w", err))
+		ch <- newWarning(warningCategoryGetRemoteVersion, fmt.Errorf("fetching remote version: %w", err))
 	} else {
 		version = remoteVersion.Version
 

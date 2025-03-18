@@ -111,6 +111,6 @@ paperless_statistics_storage_path_count 0
 paperless_statistics_tag_count 55
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 }

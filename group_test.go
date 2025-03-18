@@ -69,7 +69,7 @@ func TestGroupCollect(t *testing.T) {
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 
 	cl.count = 321
@@ -80,6 +80,6 @@ paperless_warnings_total 0
 paperless_groups 321
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
 # TYPE paperless_warnings_total gauge
-paperless_warnings_total 0
+paperless_warnings_total{category="unspecified"} 0
 `)
 }
