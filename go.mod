@@ -13,7 +13,7 @@ require (
 	github.com/prometheus/common v0.64.0
 	github.com/prometheus/exporter-toolkit v0.14.0
 	golang.org/x/sync v0.14.0
-	golang.org/x/tools v0.32.0
+	golang.org/x/tools v0.33.0
 )
 
 require (
