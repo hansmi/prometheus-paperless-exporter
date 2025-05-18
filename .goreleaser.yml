@@ -92,7 +92,7 @@ docker_manifests:
 changelog:
   groups:
     - title: Dependencies
-      regexp: '(?i)^[a-f0-9]{8,64}\s+Bump\s+[-.\w]+/\w.*\sto\s'
+      regexp: '(?i)^(?:[a-f0-9]{8,64}\s+)?Bump\s+[-.\w]+/\w.*\sto\s'
       order: 1
     - order: 0
 
