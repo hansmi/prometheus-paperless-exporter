@@ -47,6 +47,7 @@ type logCollector struct {
 
 	seen     map[string]logPosition
 	totalVec *prometheus.CounterVec
+	errorVec *prometheus.CounterVec
 }
 
 func newLogCollector(cl logClient) *logCollector {
@@ -58,11 +59,17 @@ func newLogCollector(cl logClient) *logCollector {
 			Name: "paperless_log_entries_total",
 			Help: `Best-effort count of log entries.`,
 		}, []string{"name", "module", "level"}),
+
+		errorVec: prometheus.NewCounterVec(prometheus.CounterOpts{
+            		Name: "paperless_log_errors_total",
+            		Help: "Total errors encountered during log collection",
+        	}, []string{"name", "error_type"}),
 	}
 }
 
 func (c *logCollector) describe(ch chan<- *prometheus.Desc) {
 	c.totalVec.Describe(ch)
+	c.errorVec.Describe(ch)
 }
 
 func (c *logCollector) collectOne(ctx context.Context, name string) error {
@@ -70,11 +77,16 @@ func (c *logCollector) collectOne(ctx context.Context, name string) error {
 	if err != nil {
 		var reqErr *client.RequestError
 
-		if errors.As(err, &reqErr) && reqErr.StatusCode == http.StatusNotFound {
-			return nil
-		}
-
-		return err
+        switch {
+        	case errors.As(err, &reqErr) && reqErr.StatusCode == http.StatusNotFound:
+            		c.errorVec.WithLabelValues(name, "not_found").Inc()
+        	case errors.Is(err, context.DeadlineExceeded):
+            		c.errorVec.WithLabelValues(name, "timeout").Inc()
+        	default:
+            		c.errorVec.WithLabelValues(name, "other").Inc()
+        }
+        
+        return fmt.Errorf("log %s: %w", name, err)
 	}
 
 	if len(entries) == 0 {
@@ -142,6 +154,7 @@ func (c *logCollector) collect(ctx context.Context, ch chan<- prometheus.Metric)
 	}
 
 	c.totalVec.Collect(ch)
-
+	c.errorVec.Collect(ch)
+	
 	return nil
 }
