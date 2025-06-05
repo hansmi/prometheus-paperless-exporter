@@ -77,6 +77,7 @@ func TestLog(t *testing.T) {
 				entries: map[string][]client.LogEntry{
 					"first":  nil,
 					"second": nil,
+					"error404": nil,
 				},
 			},
 		},
@@ -95,6 +96,7 @@ func TestLog(t *testing.T) {
 							Message: "bbb",
 						},
 					},
+					"second": nil,
 				},
 			},
 		},
@@ -124,7 +126,11 @@ func TestLogCollect(t *testing.T) {
 paperless_warnings_total{category="unspecified"} 0
 `)
 
-	cl.names = append(cl.names, "server", "db", "not found")
+	cl.names = []string{"server", "db"}
+	cl.entries = map[string][]client.LogEntry{
+		"server": nil,
+ 		"db":     nil,
+	}
 
 	testutil.CollectAndCompare(t, c, `
 # HELP paperless_warnings_total Number of warnings generated while scraping metrics.
@@ -161,12 +167,12 @@ paperless_warnings_total{category="unspecified"} 0
 		},
 	})
 
-	for range [3]int{} {
-		cl.addEntries("db", []client.LogEntry{
+	for i := 1; i <= 3; i++ {
+		cl.entries["db"] = []client.LogEntry{
 			{
 				Time: time.Date(2021, time.January, 1, 2, 3, 0, 0, time.UTC),
 			},
-		})
+		}
 
 		testutil.CollectAndCompare(t, c, `
 # HELP paperless_log_entries_total Best-effort count of log entries.
@@ -180,6 +186,6 @@ paperless_warnings_total{category="unspecified"} 0
 `)
 
 		// Reset logs
-		cl.entries = nil
+		cl.entries["server"] = nil
 	}
 }
