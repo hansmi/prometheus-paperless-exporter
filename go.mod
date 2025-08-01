@@ -12,7 +12,7 @@ require (
 	github.com/prometheus/client_model v0.6.2
 	github.com/prometheus/common v0.65.0
 	github.com/prometheus/exporter-toolkit v0.14.0
-	golang.org/x/sync v0.15.0
+	golang.org/x/sync v0.16.0
 	golang.org/x/tools v0.34.0
 )
 
