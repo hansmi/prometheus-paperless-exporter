@@ -8,6 +8,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+const (
+	remoteVersionCollectorID = "remote_version"
+)
+
 type remoteVersionClient interface {
 	GetRemoteVersion(ctx context.Context) (*client.RemoteVersion, *client.Response, error)
 }
@@ -24,6 +28,10 @@ func newRemoteVersionCollector(cl remoteVersionClient) *remoteVersionCollector {
 
 		updateAvailableDesc: prometheus.NewDesc("paperless_remote_version_update_available", "Whether an update is available.", []string{"version"}, nil),
 	}
+}
+
+func (c *remoteVersionCollector) id() string {
+	return remoteVersionCollectorID
 }
 
 func (c *remoteVersionCollector) describe(ch chan<- *prometheus.Desc) {

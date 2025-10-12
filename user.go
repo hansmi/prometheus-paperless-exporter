@@ -27,6 +27,10 @@ func newUserCollector(cl userClient) *userCollector {
 	}
 }
 
+func (c *userCollector) id() string {
+	return "user"
+}
+
 func (c *userCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.countDesc
 }
