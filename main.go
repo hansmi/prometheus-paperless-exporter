@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/hansmi/paperhooks/pkg/client"
@@ -23,6 +24,7 @@ var metricsPath = kingpin.Flag("web.telemetry-path", "Path under which to expose
 var disableExporterMetrics = kingpin.Flag("web.disable-exporter-metrics", "Exclude metrics about the exporter itself").Bool()
 var enableRemoteNetwork = kingpin.Flag("enable-remote-network", "Include calls to API endpoints that require public internet access for your paperless instance (e.g. checking for a paperless version)").Bool()
 var timeout = kingpin.Flag("scrape-timeout", "Maximum duration for a scrape").Default("1m").Duration()
+var remoteVersionInterval = kingpin.Flag("remote-version-interval", "Interval in seconds to poll remote version (unit: seconds)").Default("60").Int()
 
 func main() {
 	var clientFlags client.Flags
@@ -41,7 +43,8 @@ func main() {
 	}
 
 	reg := prometheus.NewPedanticRegistry()
-	reg.MustRegister(newCollector(client, *timeout, *enableRemoteNetwork))
+	remoteVersionIntervalDuration := time.Duration(*remoteVersionInterval) * time.Second
+	reg.MustRegister(newCollector(client, *timeout, *enableRemoteNetwork, remoteVersionIntervalDuration))
 
 	if !*disableExporterMetrics {
 		reg.MustRegister(
