@@ -26,6 +26,7 @@ var metricsPath = kingpin.Flag("web.telemetry-path", "Path under which to expose
 var disableExporterMetrics = kingpin.Flag("web.disable-exporter-metrics", "Exclude metrics about the exporter itself").Bool()
 var enableRemoteNetwork = kingpin.Flag("enable-remote-network", "Include calls to API endpoints that require public internet access for your paperless instance (e.g. checking for a paperless version)").Bool()
 var timeout = kingpin.Flag("scrape-timeout", "Maximum duration for a scrape").Default("1m").Duration()
+var remoteVersionInterval = kingpin.Flag("remote-version-interval", "Interval duration to poll remote version").Default("1h").Duration()
 var collectorsFlag = kingpin.Flag("collectors", "Comma-separated list of collector ids to enable. If empty all standard collectors are enabled.").String()
 
 func main() {
@@ -63,7 +64,8 @@ func main() {
 	}
 
 	reg := prometheus.NewPedanticRegistry()
-	reg.MustRegister(newCollector(client, *timeout, *enableRemoteNetwork, enabledCollectors))
+	coll := newCollector(client, *timeout, *enableRemoteNetwork, *remoteVersionInterval, enabledCollectors)
+	reg.MustRegister(coll)
 
 	if !*disableExporterMetrics {
 		reg.MustRegister(

@@ -23,7 +23,7 @@ var knownCollectors = map[string]func(*client.Client) multiCollectorMember{
 	"statistics":    func(c *client.Client) multiCollectorMember { return newStatisticsCollector(c) },
 }
 
-func newCollector(cl *client.Client, timeout time.Duration, enableRemoteNetwork bool, enabledIDs []string) prometheus.Collector {
+func newCollector(cl *client.Client, timeout time.Duration, enableRemoteNetwork bool, remoteVersionInterval time.Duration, enabledIDs []string) prometheus.Collector {
 	constructors := knownCollectors
 
 	// If enabledIDs is empty, enable all standard collectors.
@@ -44,7 +44,7 @@ func newCollector(cl *client.Client, timeout time.Duration, enableRemoteNetwork 
 	// Handle remote collector separately since it depends on external network and should
 	// only be included when requested.
 	if enableRemoteNetwork && (enableAll || slices.Contains(enabled, remoteVersionCollectorID)) {
-		members = append(members, newRemoteVersionCollector(cl))
+		members = append(members, newRemoteVersionCollector(cl, remoteVersionInterval))
 	}
 
 	c := newMultiCollector(members...)

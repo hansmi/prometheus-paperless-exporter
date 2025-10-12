@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -48,7 +49,7 @@ func TestRemoteVersion(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			c := newRemoteVersionCollector(&tc.cl)
+			c := newRemoteVersionCollector(&tc.cl, time.Second)
 
 			err := c.collect(context.Background(), testutil.DiscardMetrics(t))
 
@@ -134,7 +135,7 @@ paperless_warnings_total{category="unspecified"} 0
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			c := newMultiCollectorForTest(t, newRemoteVersionCollector(&tc.cl))
+			c := newMultiCollectorForTest(t, newRemoteVersionCollector(&tc.cl, time.Second))
 
 			testutil.CollectAndCompare(t, c, tc.want)
 		})

@@ -26,6 +26,13 @@ toolkit][toolkit]. A configuration file can be passed to the `-web.config` flag
 
 See the `--help` output for more flags.
 
+### Remote version polling
+
+When `--enable-remote-network` is enabled the exporter will periodically poll
+the Paperless API to check whether a newer Paperless-ngx version is available.
+The polling interval duration can be configured with `--remote-version-interval`.
+Default is `1h`.
+
 ## Collector selection
 
 The exporter supports configuring which collectors are enabled via the 
@@ -64,7 +71,6 @@ Enable all standard collectors and also the remote version collector
 
 If you specify unknown collector ids the exporter will exit with an error 
 listing the unknown and known ids.
-
 
 ## Permissions
 
