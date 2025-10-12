@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/hansmi/paperhooks/pkg/client"
@@ -23,6 +24,7 @@ var metricsPath = kingpin.Flag("web.telemetry-path", "Path under which to expose
 var disableExporterMetrics = kingpin.Flag("web.disable-exporter-metrics", "Exclude metrics about the exporter itself").Bool()
 var enableRemoteNetwork = kingpin.Flag("enable-remote-network", "Include calls to API endpoints that require public internet access for your paperless instance (e.g. checking for a paperless version)").Bool()
 var timeout = kingpin.Flag("scrape-timeout", "Maximum duration for a scrape").Default("1m").Duration()
+var collectorsFlag = kingpin.Flag("collectors", "Comma-separated list of collector ids to enable. If empty all standard collectors are enabled.").String()
 
 func main() {
 	var clientFlags client.Flags
@@ -40,8 +42,19 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Parse collectors flag into a slice (comma separated)
+	enabledCollectors := []string{}
+	collectorsStr := strings.TrimSpace(*collectorsFlag)
+	if len(collectorsStr) > 0 {
+		for _, s := range strings.Split(collectorsStr, ",") {
+			if s = strings.TrimSpace(s); s != "" {
+				enabledCollectors = append(enabledCollectors, s)
+			}
+		}
+	}
+
 	reg := prometheus.NewPedanticRegistry()
-	reg.MustRegister(newCollector(client, *timeout, *enableRemoteNetwork))
+	reg.MustRegister(newCollector(client, *timeout, *enableRemoteNetwork, enabledCollectors))
 
 	if !*disableExporterMetrics {
 		reg.MustRegister(

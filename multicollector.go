@@ -49,6 +49,7 @@ func formatWarnings(warnings map[warningCategory][]error) string {
 type multiCollectorMember interface {
 	describe(chan<- *prometheus.Desc)
 	collect(context.Context, chan<- prometheus.Metric) error
+	GetID() string
 }
 
 type multiCollector struct {

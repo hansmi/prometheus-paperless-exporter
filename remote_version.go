@@ -26,6 +26,10 @@ func newRemoteVersionCollector(cl remoteVersionClient) *remoteVersionCollector {
 	}
 }
 
+func (c *remoteVersionCollector) GetID() string {
+	return "remote_version"
+}
+
 func (c *remoteVersionCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.updateAvailableDesc
 }
