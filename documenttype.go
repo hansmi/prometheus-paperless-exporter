@@ -32,6 +32,10 @@ func newDocumentTypeCollector(cl documentTypeClient) *documentTypeCollector {
 	}
 }
 
+func (c *documentTypeCollector) GetID() string {
+	return "document_type"
+}
+
 func (c *documentTypeCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.infoDesc
 	ch <- c.docCountDesc
