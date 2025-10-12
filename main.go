@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/hansmi/paperhooks/pkg/client"
@@ -23,6 +28,7 @@ var metricsPath = kingpin.Flag("web.telemetry-path", "Path under which to expose
 var disableExporterMetrics = kingpin.Flag("web.disable-exporter-metrics", "Exclude metrics about the exporter itself").Bool()
 var enableRemoteNetwork = kingpin.Flag("enable-remote-network", "Include calls to API endpoints that require public internet access for your paperless instance (e.g. checking for a paperless version)").Bool()
 var timeout = kingpin.Flag("scrape-timeout", "Maximum duration for a scrape").Default("1m").Duration()
+var remoteVersionInterval = kingpin.Flag("remote-version-interval", "Interval in seconds to poll remote version (unit: seconds)").Default("60").Int()
 
 func main() {
 	var clientFlags client.Flags
@@ -41,7 +47,11 @@ func main() {
 	}
 
 	reg := prometheus.NewPedanticRegistry()
-	reg.MustRegister(newCollector(client, *timeout, *enableRemoteNetwork))
+	remoteVersionIntervalDuration := time.Duration(*remoteVersionInterval) * time.Second
+	coll, stop := newCollector(client, *timeout, *enableRemoteNetwork, remoteVersionIntervalDuration)
+	reg.MustRegister(coll)
+	// Ensure background collectors are stopped on shutdown
+	defer stop()
 
 	if !*disableExporterMetrics {
 		reg.MustRegister(
@@ -64,6 +74,21 @@ func main() {
 	})
 
 	server := &http.Server{}
+
+	// Setup signal handling for graceful shutdown
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigs
+		// stop background collectors
+		stop()
+
+		// give the server some time to shutdown gracefully
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		_ = server.Shutdown(ctx)
+		os.Exit(0)
+	}()
 
 	if err := web.ListenAndServe(server, webConfig, logger); err != nil {
 		log.Fatal(err)
