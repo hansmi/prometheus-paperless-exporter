@@ -26,6 +26,45 @@ toolkit][toolkit]. A configuration file can be passed to the `-web.config` flag
 
 See the `--help` output for more flags.
 
+## Collector selection
+
+The exporter supports configuring which collectors are enabled via the 
+`--collectors` flag. Provide a comma-separated list of collector ids.
+If the flag is omitted or empty, all standard collectors are enabled.
+
+Available collector ids:
+
+* `tag`
+* `correspondent`
+* `document_type`
+* `storage_path`
+* `task`
+* `log`
+* `group`
+* `user`
+* `document`
+* `status`
+* `statistics`
+* `remote_version` (requires `--enable-remote-network` to actually be used)
+
+Examples:
+
+Enable only tags and documents:
+
+```shell
+./prometheus-paperless-exporter --collectors=tag,document
+```
+
+Enable all standard collectors and also the remote version collector
+(remote network checks must be explicitly allowed):
+
+```shell
+./prometheus-paperless-exporter --enable-remote-network
+```
+
+If you specify unknown collector ids the exporter will exit with an error 
+listing the unknown and known ids.
+
 
 ## Permissions
 

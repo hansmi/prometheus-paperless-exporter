@@ -36,6 +36,10 @@ func newTagCollector(cl tagClient) *tagCollector {
 	}
 }
 
+func (c *tagCollector) id() string {
+	return "tag"
+}
+
 func (c *tagCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.infoDesc
 	ch <- c.docCountDesc

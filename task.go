@@ -65,6 +65,10 @@ func newTaskCollector(cl taskClient) *taskCollector {
 	return c
 }
 
+func (c *taskCollector) id() string {
+	return "task"
+}
+
 // Returns a canonicalized status string for labels.
 func (c *taskCollector) ensureStatusInfo(s client.TaskStatus) string {
 	status := strings.ToLower(s.String())

@@ -32,6 +32,10 @@ func newStoragePathCollector(cl storagePathClient) *storagePathCollector {
 	}
 }
 
+func (c *storagePathCollector) id() string {
+	return "storage_path"
+}
+
 func (c *storagePathCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.infoDesc
 	ch <- c.docCountDesc

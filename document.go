@@ -27,6 +27,10 @@ func newDocumentCollector(cl documentClient) *documentCollector {
 	}
 }
 
+func (c *documentCollector) id() string {
+	return "document"
+}
+
 func (c *documentCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.countDesc
 }
