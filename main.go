@@ -53,6 +53,19 @@ func main() {
 		}
 	}
 
+	// Validate collector ids
+	if unknown := validateCollectorIDs(enabledCollectors); len(unknown) > 0 {
+		// Build a helpful error message listing unknown and known ids
+		knownKeys := make([]string, 0, len(knownCollectors())+1)
+		for k := range knownCollectors() {
+			knownKeys = append(knownKeys, k)
+		}
+		// remote_version is special and can be enabled but is gated by enableRemoteNetwork
+		knownKeys = append(knownKeys, "remote_version")
+
+		log.Fatalf("unknown collector ids: %v. Known collector ids: %v", unknown, knownKeys)
+	}
+
 	reg := prometheus.NewPedanticRegistry()
 	reg.MustRegister(newCollector(client, *timeout, *enableRemoteNetwork, enabledCollectors))
 
