@@ -132,7 +132,7 @@ paperless_remote_version_update_available{version="v2.14.7"} 1
 `)
 			}
 
-			c := newCollector(cl, time.Minute, enableRemoteNetwork, 1*time.Second)
+			c, _ := newCollector(cl, time.Minute, enableRemoteNetwork, 1*time.Second)
 			testutil.CollectAndCompare(t, c, want.String())
 		})
 	}

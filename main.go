@@ -1,9 +1,13 @@
 package main
 
 import (
+	"context"
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/alecthomas/kingpin/v2"
@@ -44,7 +48,10 @@ func main() {
 
 	reg := prometheus.NewPedanticRegistry()
 	remoteVersionIntervalDuration := time.Duration(*remoteVersionInterval) * time.Second
-	reg.MustRegister(newCollector(client, *timeout, *enableRemoteNetwork, remoteVersionIntervalDuration))
+	coll, stop := newCollector(client, *timeout, *enableRemoteNetwork, remoteVersionIntervalDuration)
+	reg.MustRegister(coll)
+	// Ensure background collectors are stopped on shutdown
+	defer stop()
 
 	if !*disableExporterMetrics {
 		reg.MustRegister(
@@ -67,6 +74,21 @@ func main() {
 	})
 
 	server := &http.Server{}
+
+	// Setup signal handling for graceful shutdown
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigs
+		// stop background collectors
+		stop()
+
+		// give the server some time to shutdown gracefully
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		_ = server.Shutdown(ctx)
+		os.Exit(0)
+	}()
 
 	if err := web.ListenAndServe(server, webConfig, logger); err != nil {
 		log.Fatal(err)
