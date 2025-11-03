@@ -1,6 +1,8 @@
 package main
 
 import (
+	"maps"
+	"slices"
 	"time"
 
 	"github.com/hansmi/paperhooks/pkg/client"
@@ -12,28 +14,22 @@ func newCollector(cl *client.Client, timeout time.Duration, enableRemoteNetwork 
 
 	// If enabledIDs is empty, enable all standard collectors.
 	enableAll := len(enabledIDs) == 0
-	enabled := map[string]struct{}{}
+	var enabled []string
+	enabled = enabledIDs
 	if enableAll {
-		for id := range constructors {
-			enabled[id] = struct{}{}
-		}
-	} else {
-		for _, id := range enabledIDs {
-			enabled[id] = struct{}{}
-		}
+		enabled = slices.Collect(maps.Keys(constructors))
 	}
 
 	members := []multiCollectorMember{}
 	for id, collectorFunc := range constructors {
-		if _, ok := enabled[id]; ok {
+		if slices.Contains(enabled, id) {
 			members = append(members, collectorFunc(cl))
 		}
 	}
 
 	// Handle remote collector separately since it depends on external network and should
 	// only be included when requested.
-	_, remoteVersionEnabled := enabled[remoteVersionCollectorID]
-	if enableRemoteNetwork && (enableAll || remoteVersionEnabled) {
+	if enableRemoteNetwork && (enableAll || slices.Contains(enabled, remoteVersionCollectorID)) {
 		members = append(members, newRemoteVersionCollector(cl))
 	}
 
