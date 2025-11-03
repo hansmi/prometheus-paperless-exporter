@@ -56,7 +56,7 @@ func main() {
 	// Validate collector ids
 	if unknown := validateCollectorIDs(enabledCollectors); len(unknown) > 0 {
 		// Build a helpful error message listing unknown and known ids
-		knownKeys := slices.Collect(maps.Keys(knownCollectors()))
+		knownKeys := slices.Collect(maps.Keys(knownCollectors))
 		// remote_version is special and can be enabled but is gated by enableRemoteNetwork
 		knownKeys = append(knownKeys, remoteVersionCollectorID)
 		log.Fatalf("unknown collector ids: %v. Known collector ids: %v", unknown, knownKeys)
