@@ -107,6 +107,12 @@ paperless_status_index_status 0
 # HELP paperless_status_redis_status Status of redis. 1 is OK, 0 is not OK.
 # TYPE paperless_status_redis_status gauge
 paperless_status_redis_status 0
+# HELP paperless_status_sanity_check_last_run_timestamp_seconds Number of seconds since 01.01.1970 since the last time the sanity check has been run.
+# TYPE paperless_status_sanity_check_last_run_timestamp_seconds gauge
+paperless_status_sanity_check_last_run_timestamp_seconds -6.21355968e+10
+# HELP paperless_status_sanity_check_status Status of the sanity check. 1 is OK, 0 is not OK.
+# TYPE paperless_status_sanity_check_status gauge
+paperless_status_sanity_check_status 0
 # HELP paperless_status_storage_available_bytes Available storage of Paperless in bytes.
 # TYPE paperless_status_storage_available_bytes gauge
 paperless_status_storage_available_bytes 0
