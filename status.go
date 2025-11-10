@@ -25,6 +25,8 @@ type statusCollector struct {
 	indexLastModifiedDesc           *prometheus.Desc
 	classifierStatusDesc            *prometheus.Desc
 	classifierLastTrainedDesc       *prometheus.Desc
+	sanityCheckStatusDesc           *prometheus.Desc
+	sanityCheckLastRunDesc          *prometheus.Desc
 }
 
 func newStatusCollector(cl statusClient) *statusCollector {
@@ -38,9 +40,11 @@ func newStatusCollector(cl statusClient) *statusCollector {
 		redisStatusDesc:                 prometheus.NewDesc("paperless_status_redis_status", "Status of redis. 1 is OK, 0 is not OK.", nil, nil),
 		celeryStatusDesc:                prometheus.NewDesc("paperless_status_celery_status", "Status of celery. 1 is OK, 0 is not OK.", nil, nil),
 		indexStatusDesc:                 prometheus.NewDesc("paperless_status_index_status", "Status of the index. 1 is OK, 0 is not OK.", nil, nil),
-		indexLastModifiedDesc:           prometheus.NewDesc("paperless_status_index_last_modified_timestamp_seconds", "Number of seconds since 01.01.1970 since the last time the index has been modified.", nil, nil),
+		indexLastModifiedDesc:           prometheus.NewDesc("paperless_status_index_last_modified_timestamp_seconds", "Number of seconds since 1970-01-01 since the last time the index has been modified.", nil, nil),
 		classifierStatusDesc:            prometheus.NewDesc("paperless_status_classifier_status", "Status of the classifier. 1 is OK, 0 is not OK.", nil, nil),
-		classifierLastTrainedDesc:       prometheus.NewDesc("paperless_status_classifier_last_trained_timestamp_seconds", "Number of seconds since 01.01.1970 since the last time the classifier has been trained.", nil, nil),
+		classifierLastTrainedDesc:       prometheus.NewDesc("paperless_status_classifier_last_trained_timestamp_seconds", "Number of seconds since 1970-01-01 since the last time the classifier has been trained.", nil, nil),
+		sanityCheckStatusDesc:           prometheus.NewDesc("paperless_status_sanity_check_status", "Status of the sanity check. 1 is OK, 0 is not OK.", nil, nil),
+		sanityCheckLastRunDesc:          prometheus.NewDesc("paperless_status_sanity_check_last_run_timestamp_seconds", "Number of seconds since 1970-01-01 since the last time the sanity check has been run.", nil, nil),
 	}
 }
 
@@ -59,6 +63,8 @@ func (c *statusCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.indexLastModifiedDesc
 	ch <- c.classifierStatusDesc
 	ch <- c.classifierLastTrainedDesc
+	ch <- c.sanityCheckStatusDesc
+	ch <- c.sanityCheckLastRunDesc
 }
 
 func (c *statusCollector) collect(ctx context.Context, ch chan<- prometheus.Metric) error {
@@ -77,6 +83,8 @@ func (c *statusCollector) collect(ctx context.Context, ch chan<- prometheus.Metr
 	ch <- prometheus.MustNewConstMetric(c.indexLastModifiedDesc, prometheus.GaugeValue, float64(status.Tasks.IndexLastModified.Unix()))
 	ch <- prometheus.MustNewConstMetric(c.classifierStatusDesc, prometheus.GaugeValue, c.isOK(status.Tasks.ClassifierStatus))
 	ch <- prometheus.MustNewConstMetric(c.classifierLastTrainedDesc, prometheus.GaugeValue, float64(status.Tasks.ClassifierLastTrained.Unix()))
+	ch <- prometheus.MustNewConstMetric(c.sanityCheckStatusDesc, prometheus.GaugeValue, c.isOK(status.Tasks.SanityCheckStatus))
+	ch <- prometheus.MustNewConstMetric(c.sanityCheckLastRunDesc, prometheus.GaugeValue, float64(status.Tasks.SanityCheckLastRun.Unix()))
 
 	return nil
 }
