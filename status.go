@@ -40,11 +40,11 @@ func newStatusCollector(cl statusClient) *statusCollector {
 		redisStatusDesc:                 prometheus.NewDesc("paperless_status_redis_status", "Status of redis. 1 is OK, 0 is not OK.", nil, nil),
 		celeryStatusDesc:                prometheus.NewDesc("paperless_status_celery_status", "Status of celery. 1 is OK, 0 is not OK.", nil, nil),
 		indexStatusDesc:                 prometheus.NewDesc("paperless_status_index_status", "Status of the index. 1 is OK, 0 is not OK.", nil, nil),
-		indexLastModifiedDesc:           prometheus.NewDesc("paperless_status_index_last_modified_timestamp_seconds", "Number of seconds since 01.01.1970 since the last time the index has been modified.", nil, nil),
+		indexLastModifiedDesc:           prometheus.NewDesc("paperless_status_index_last_modified_timestamp_seconds", "Number of seconds since 1970-01-01 since the last time the index has been modified.", nil, nil),
 		classifierStatusDesc:            prometheus.NewDesc("paperless_status_classifier_status", "Status of the classifier. 1 is OK, 0 is not OK.", nil, nil),
-		classifierLastTrainedDesc:       prometheus.NewDesc("paperless_status_classifier_last_trained_timestamp_seconds", "Number of seconds since 01.01.1970 since the last time the classifier has been trained.", nil, nil),
+		classifierLastTrainedDesc:       prometheus.NewDesc("paperless_status_classifier_last_trained_timestamp_seconds", "Number of seconds since 1970-01-01 since the last time the classifier has been trained.", nil, nil),
 		sanityCheckStatusDesc:           prometheus.NewDesc("paperless_status_sanity_check_status", "Status of the sanity check. 1 is OK, 0 is not OK.", nil, nil),
-		sanityCheckLastRunDesc:          prometheus.NewDesc("paperless_status_sanity_check_last_run_timestamp_seconds", "Number of seconds since 01.01.1970 since the last time the sanity check has been run.", nil, nil),
+		sanityCheckLastRunDesc:          prometheus.NewDesc("paperless_status_sanity_check_last_run_timestamp_seconds", "Number of seconds since 1970-01-01 since the last time the sanity check has been run.", nil, nil),
 	}
 }
 
