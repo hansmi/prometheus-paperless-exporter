@@ -42,9 +42,6 @@ func newRemoteVersionCollector(cl remoteVersionClient, interval time.Duration) *
 		cachedVersion:         "",
 		updateAvailableDesc:   prometheus.NewDesc("paperless_remote_version_update_available", "Whether an update is available.", []string{"version"}, nil),
 	}
-
-	// Perform initial fetch synchronously so collectors expose data immediately.
-	c.fetchOnce()
 	go c.run()
 
 	return c
@@ -83,6 +80,7 @@ func (c *remoteVersionCollector) run() {
 	// Perform one immediate fetch
 	c.fetchOnce()
 
+	// Ticker loop will start after interval time is passed
 	for range ticker.C {
 		c.fetchOnce()
 	}
