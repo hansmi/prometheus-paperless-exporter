@@ -51,7 +51,12 @@ func main() {
 		}
 	}
 
-	collector, err := newCollector(client, *timeout, *enableRemoteNetwork, enabledCollectors)
+	collector, err := newCollector(collectorOptions{
+		client:              client,
+		timeout:             *timeout,
+		enableRemoteNetwork: *enableRemoteNetwork,
+		enabledIDs:          enabledCollectors,
+	})
 	if err != nil {
 		log.Fatalf("Collector: %v", err)
 	}

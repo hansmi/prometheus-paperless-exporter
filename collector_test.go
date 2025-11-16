@@ -140,7 +140,11 @@ paperless_remote_version_update_available{version="v2.14.7"} 1
 `)
 			}
 
-			c, err := newCollector(cl, time.Minute, enableRemoteNetwork, nil)
+			c, err := newCollector(collectorOptions{
+				client:              cl,
+				timeout:             time.Minute,
+				enableRemoteNetwork: enableRemoteNetwork,
+			})
 			if err != nil {
 				t.Errorf("newCollector() failed: %v", err)
 			}
@@ -178,7 +182,10 @@ func TestCollectorError(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := newCollector(nil, 0, tc.enableRemoteNetwork, tc.enabled)
+			_, err := newCollector(collectorOptions{
+				enableRemoteNetwork: tc.enableRemoteNetwork,
+				enabledIDs:          tc.enabled,
+			})
 
 			if diff := cmp.Diff(tc.wantErr, err, cmpopts.EquateErrors()); diff != "" {
 				t.Errorf("Error diff (-want +got):\n%s", diff)

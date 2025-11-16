@@ -23,25 +23,32 @@ var knownCollectors = map[string]func(*client.Client) multiCollectorMember{
 	"remote_version": func(c *client.Client) multiCollectorMember { return newRemoteVersionCollector(c) },
 }
 
-func newCollector(cl *client.Client, timeout time.Duration, enableRemoteNetwork bool, enabledIDs []string) (prometheus.Collector, error) {
+type collectorOptions struct {
+	client              *client.Client
+	timeout             time.Duration
+	enableRemoteNetwork bool
+	enabledIDs          []string
+}
+
+func newCollector(opts collectorOptions) (prometheus.Collector, error) {
 	var members []multiCollectorMember
 
 	add := func(id string, fn func(*client.Client) multiCollectorMember) {
 		// Remote collector is treated specially since it depends on external
 		// network and should only be enabled when requested.
-		if id == remoteVersionCollectorID && !enableRemoteNetwork {
+		if id == remoteVersionCollectorID && !opts.enableRemoteNetwork {
 			return
 		}
 
-		members = append(members, fn(cl))
+		members = append(members, fn(opts.client))
 	}
 
-	if len(enabledIDs) == 0 {
+	if len(opts.enabledIDs) == 0 {
 		for id, fn := range knownCollectors {
 			add(id, fn)
 		}
 	} else {
-		for _, id := range enabledIDs {
+		for _, id := range opts.enabledIDs {
 			fn := knownCollectors[id]
 			if fn == nil {
 				return nil, fmt.Errorf("unknown collector: %s", id)
@@ -52,7 +59,7 @@ func newCollector(cl *client.Client, timeout time.Duration, enableRemoteNetwork 
 	}
 
 	c := newMultiCollector(members...)
-	c.timeout = timeout
+	c.timeout = opts.timeout
 
 	return c, nil
 }
