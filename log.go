@@ -61,10 +61,6 @@ func newLogCollector(cl logClient) *logCollector {
 	}
 }
 
-func (c *logCollector) id() string {
-	return "log"
-}
-
 func (c *logCollector) describe(ch chan<- *prometheus.Desc) {
 	c.totalVec.Describe(ch)
 }

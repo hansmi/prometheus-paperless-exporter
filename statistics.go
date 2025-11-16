@@ -41,10 +41,6 @@ func newStatisticsCollector(cl statisticsClient) *statisticsCollector {
 	}
 }
 
-func (c *statisticsCollector) id() string {
-	return "statistics"
-}
-
 func (c *statisticsCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.documentsTotalDesc
 	ch <- c.documentsInboxDesc

@@ -48,10 +48,6 @@ func newStatusCollector(cl statusClient) *statusCollector {
 	}
 }
 
-func (c *statusCollector) id() string {
-	return "status"
-}
-
 func (c *statusCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.storageTotalDesc
 	ch <- c.storageAvailableDesc

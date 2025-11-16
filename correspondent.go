@@ -36,10 +36,6 @@ func newCorrespondentCollector(cl correspondentClient) *correspondentCollector {
 	}
 }
 
-func (c *correspondentCollector) id() string {
-	return "correspondent"
-}
-
 func (c *correspondentCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.infoDesc
 	ch <- c.docCountDesc

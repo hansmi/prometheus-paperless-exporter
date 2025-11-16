@@ -47,7 +47,6 @@ func formatWarnings(warnings map[warningCategory][]error) string {
 }
 
 type multiCollectorMember interface {
-	id() string
 	describe(chan<- *prometheus.Desc)
 	collect(context.Context, chan<- prometheus.Metric) error
 }

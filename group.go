@@ -27,10 +27,6 @@ func newGroupCollector(cl groupClient) *groupCollector {
 	}
 }
 
-func (c *groupCollector) id() string {
-	return "group"
-}
-
 func (c *groupCollector) describe(ch chan<- *prometheus.Desc) {
 	ch <- c.countDesc
 }
