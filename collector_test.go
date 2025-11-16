@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hansmi/paperhooks/pkg/client"
 	"github.com/hansmi/prometheus-paperless-exporter/internal/testutil"
 )
@@ -138,8 +140,49 @@ paperless_remote_version_update_available{version="v2.14.7"} 1
 `)
 			}
 
-			c := newCollector(cl, time.Minute, enableRemoteNetwork, []string{})
+			c, err := newCollector(cl, time.Minute, enableRemoteNetwork, nil)
+			if err != nil {
+				t.Errorf("newCollector() failed: %v", err)
+			}
+
 			testutil.CollectAndCompare(t, c, want.String())
+		})
+	}
+}
+
+func TestCollectorError(t *testing.T) {
+	for _, tc := range []struct {
+		name                string
+		enableRemoteNetwork bool
+		enabled             []string
+		wantErr             error
+	}{
+		{name: "default"},
+		{
+			name:                "default with remote",
+			enableRemoteNetwork: true,
+		},
+		{
+			name:    "unknown",
+			enabled: []string{"bad", "", "foo"},
+			wantErr: cmpopts.AnyError,
+		},
+		{
+			name:    "remote version only",
+			enabled: []string{"remote_version"},
+		},
+		{
+			name:                "enabled remote version only",
+			enableRemoteNetwork: true,
+			enabled:             []string{"remote_version"},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := newCollector(nil, 0, tc.enableRemoteNetwork, tc.enabled)
+
+			if diff := cmp.Diff(tc.wantErr, err, cmpopts.EquateErrors()); diff != "" {
+				t.Errorf("Error diff (-want +got):\n%s", diff)
+			}
 		})
 	}
 }
