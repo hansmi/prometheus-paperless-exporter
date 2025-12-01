@@ -9,7 +9,7 @@ permissions: {}
 
 jobs:
   test:
-    uses: hansmi/ghactions-go-test-workflow/.github/workflows/test.yaml@v0.2
+    uses: hansmi/ghactions-go-test-workflow/.github/workflows/test.yaml@0.3
     with:
       runs-on: ubuntu-latest
     permissions:
