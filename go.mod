@@ -9,7 +9,7 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/prometheus/client_model v0.6.2
 	github.com/prometheus/common v0.69.0
-	github.com/prometheus/exporter-toolkit v0.16.0
+	github.com/prometheus/exporter-toolkit v0.17.1
 	golang.org/x/sync v0.21.0
 	golang.org/x/tools v0.47.0
 )
@@ -28,8 +28,8 @@ require (
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
-	github.com/mdlayher/socket v0.5.1 // indirect
-	github.com/mdlayher/vsock v1.2.1 // indirect
+	github.com/mdlayher/socket v0.6.0 // indirect
+	github.com/mdlayher/vsock v1.3.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
 	github.com/prometheus/procfs v0.19.2 // indirect
