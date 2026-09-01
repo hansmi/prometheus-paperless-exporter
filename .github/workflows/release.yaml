@@ -9,7 +9,7 @@ permissions: {}
 
 jobs:
   release:
-    uses: hansmi/ghactions-goreleaser-workflow/.github/workflows/release.yaml@v0.5
+    uses: hansmi/ghactions-goreleaser-workflow/.github/workflows/release.yaml@v0.6
     with:
       qemu-enabled: true
     permissions:
