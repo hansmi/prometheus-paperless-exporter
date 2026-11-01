@@ -11,7 +11,7 @@ require (
 	github.com/prometheus/common v0.72.0
 	github.com/prometheus/exporter-toolkit v0.20.0
 	golang.org/x/sync v0.24.0
-	golang.org/x/tools v0.50.0
+	golang.org/x/tools v0.52.0
 )
 
 require (
@@ -36,13 +36,13 @@ require (
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
-	golang.org/x/crypto v0.57.0 // indirect
+	golang.org/x/crypto v0.58.0 // indirect
 	golang.org/x/exp v0.0.0-20251023183803-a4bb9ffd2546 // indirect
-	golang.org/x/mod v0.41.0 // indirect
-	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/mod v0.42.0 // indirect
+	golang.org/x/net v0.61.0 // indirect
 	golang.org/x/oauth2 v0.37.0 // indirect
-	golang.org/x/sys v0.48.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
 )
