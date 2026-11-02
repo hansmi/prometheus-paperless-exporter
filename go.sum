@@ -25,8 +25,8 @@ github.com/google/go-querystring v1.2.0 h1:yhqkPbu2/OH+V9BfpCVPZkNmUXhb2gBxJArfh
 github.com/google/go-querystring v1.2.0/go.mod h1:8IFJqpSRITyJ8QhQ13bmbeMBDfmeEJZD5A0egEOmkqU=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/hansmi/paperhooks v0.0.16 h1:o3+BdYjxjtWtxUFMg/2vfWVmtx2cxlRFynAf5gcRRHs=
-github.com/hansmi/paperhooks v0.0.16/go.mod h1:FmtsnzvUzyZyQmCGHgB2HtCUrxsFM1NbeLmLHbooP+8=
+github.com/hansmi/paperhooks v0.0.18 h1:UmTOUZwevHJVPkKZlA1PqK9ADh8mGfJo1XYq/8KHntY=
+github.com/hansmi/paperhooks v0.0.18/go.mod h1:QGih5vvfXl5XYxYNs3IBBeIyaAbQSp+kA1PKAGoLppw=
 github.com/hashicorp/go-uuid v1.0.3 h1:2gKiV6YVmrJ1i2CKKa9obLvRieoRGviZFL26PcT/Co8=
 github.com/hashicorp/go-uuid v1.0.3/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
 github.com/iancoleman/strcase v0.3.0 h1:nTXanmYxhfFAMjZL34Ov6gkzEsSJZ5DbhxWjvSASxEI=
